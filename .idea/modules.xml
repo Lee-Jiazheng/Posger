@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/EnSegment/EnSegment.iml" filepath="$PROJECT_DIR$/EnSegment/EnSegment.iml" />
       <module fileurl="file://$PROJECT_DIR$/Posger.iml" filepath="$PROJECT_DIR$/Posger.iml" />
       <module fileurl="file://$PROJECT_DIR$/cmd/cmd.iml" filepath="$PROJECT_DIR$/cmd/cmd.iml" />
       <module fileurl="file://$PROJECT_DIR$/textrank/textrank.iml" filepath="$PROJECT_DIR$/textrank/textrank.iml" />

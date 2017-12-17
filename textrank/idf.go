@@ -2,58 +2,76 @@ package textrank
 
 import (
 	"fmt"
-	"time"
-	"math/big"
-	"io/ioutil"
 	"math"
+	"../tika"
+	"os"
+	"bufio"
+	"sync"
 )
 
-func trainIDF() {
-	articles := make([]Article, 0)
-	base_dir := "/home/lee/articles/"
-	paths := []string{"1.txt", "2.txt", "3.txt", "4.txt", "5.txt", "6.txt"}
-	for _, path := range paths {
-		content, _ := ioutil.ReadFile(base_dir + path)
-		article := Article{Sentences:make([]Sentence, 0), content:string(content)}
-		article.segementSentence()
-		articles = append(articles, article)
+var (
+	// trained IDF article count
+	articleCount int
+	WordDictionary map[string]int
+	dictMutex sync.Mutex
+)
+
+var WordIDF = make(map[string]float64)
+
+
+func init() {
+	WordDictionary = make(map[string]int)
+	articleCount = 0
+}
+
+func SaveWordDictionary() error{
+	file, err := os.Create("IDF.dict")
+	if err != nil { return err}
+	defer file.Close()
+	w := bufio.NewWriter(file)
+	for word, count := range WordDictionary {
+		_, err := w.WriteString(fmt.Sprintf(`%s %.6f\n`, word, count))
+		if err != nil { return err}
+	}
+	w.Flush()
+	return nil
+}
+
+func GetWordIDF(word string) float64 {
+	idf := math.Log( (float64(articleCount) + 0.5) / (float64(WordDictionary[word]) + 0.5) )
+	return idf
+}
+
+func ArticlesBatchIDF(filenames []string) []error {
+	errCh := make(chan error)
+	errors := make([]error, 0)
+	for _, filename := range filenames {
+		go articleSingleIDF(filename, errCh)
 	}
 
-
-	for _, article := range articles {
-		recordDictionary := make(map[string]bool)
-		for _, sentence := range article.Sentences {
-			// sentence := sentence
-			for _, word := range sentence.Words {
-
-				if recordDictionary[word] == false {
-					recordDictionary[word] = true
-					WordDocumentary[word] += 1
-				}
-			}
-		}
+	for range filenames{
+		err := <-errCh
+		if err != nil { errors = append(errors, err)}
 	}
+	fmt.Print(WordDictionary)
+	return errors
+}
 
-	content, _ := ioutil.ReadFile(base_dir + "test.txt")
-	article := Article{content:string(content), Sentences:nil}
-	article.segementSentence()
+func articleSingleIDF(filename string, errCh chan<- error) {
+	content, err := tika.GetPdfContent(filename)
+	if err != nil { errCh <- err; return }
+	article := Article{Sentences:make([]Sentence, 0), content:content}
+	article.segementSentence("en")
+	words := article.countWord()
+	processWordDict(words)
+	articleCount++
+	errCh <- nil
+}
 
-	fmt.Print(WordDocumentary)
-
-	start := time.Now()
-
-	r := new(big.Int)
-	fmt.Println(r.Binomial(1000, 10))
-
-	var temp []byte
-
-	for word, count := range WordDocumentary {
-		idf := math.Log( (float64(float64(len(articles)) + 0.5) / (float64(count) + 0.5) ))
-		WordIDF[word] = idf
-		temp = append(temp, []byte(word + " " + fmt.Sprintf("%.6f", idf) + "\n")...)
+func processWordDict(words []string) {
+	dictMutex.Lock()
+	for _, word := range words {
+		WordDictionary[word] += 1
 	}
-
-	ioutil.WriteFile(base_dir + "IDF.txt", temp,0666)
-	elapsed := time.Since(start)
-	fmt.Printf("\nBinomial took %s", elapsed)
+	dictMutex.Unlock()
 }

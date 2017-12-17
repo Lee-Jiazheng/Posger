@@ -1,6 +1,11 @@
 package main
-import "../tika"
+
+import (
+	"../textrank"
+	"fmt"
+)
 
 func main() {
-	tika.GetPdfContent("")
+	errors := textrank.ArticlesBatchIDF([]string{`E:\Posger\static\articles\test.pdf`})
+	fmt.Print(errors)
 }

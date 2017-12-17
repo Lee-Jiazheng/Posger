@@ -1,7 +1,6 @@
 package textrank
 
 import (
-	"math"
 	"github.com/yanyiwu/gojieba"
 	"strings"
 	"fmt"
@@ -12,11 +11,12 @@ import (
 	"io"
 	"strconv"
 	"io/ioutil"
+	"log"
+	"../EnSegment"
 )
 
 type Sentence struct {
 	Words []string
-	content string
 	Point float64
 }
 
@@ -26,9 +26,10 @@ type Article struct {
 }
 
 func (self *Sentence) SegementWords() {
+	fmt.Print("jiebaing")
 	jieba := gojieba.NewJieba()
 	defer jieba.Free()
-	self.Words = jieba.Cut(self.content, true)
+	//self.Words = jieba.Cut(self.content, true)
 }
 
 
@@ -42,17 +43,47 @@ func split_sentence(char rune) bool {
 	return false
 }
 
-func (self *Article) segementSentence() {
-	sentences := strings.FieldsFunc(self.content, split_sentence)
-	for _, sentence := range sentences {
-		sentence := Sentence{content:sentence}
-		sentence.SegementWords()
-		self.Sentences = append(self.Sentences, sentence)
+func (self *Article) segementSentence(lang string) {
+	var words []string
+	if lang == "en" {
+		words = EnSegment.CutAll(self.content)
+	} else {
+		jieba := gojieba.NewJieba()
+		defer jieba.Free()
+		log.Print("jieba cutting article...")
+		words = jieba.CutAll(self.content)
 	}
+	self.Sentences = self.cutSentences(&words)
+}
+
+func (self *Article) cutSentences(words *[]string) []Sentence{
+	var start, end int
+	var sentences = make([]Sentence, 0)
+	for i, word := range *words {
+		if isSegmentSymbol(word) {
+			end = i
+			sentences = append(sentences, Sentence{Words: (*words)[start:end]})
+			start = i
+		}
+	}
+	return sentences
+}
+
+func (self *Article)countWord() []string{
+	recordDictionary := make(map[string]bool)
+	words := make([]string, 0)
+	for _, sentence := range self.Sentences {
+		for _, word := range sentence.Words {
+			if recordDictionary[word] == false {
+				recordDictionary[word] = true
+				words = append(words, word)
+			}
+		}
+	}
+	return words
 }
 
 func (self *Article) summary() {
-
 	n := len(self.Sentences)
 	data := make([]float64, n * n)
 	var t1, t2 int
@@ -90,7 +121,8 @@ func (self *Article) summary() {
 	}
 	sort.Sort(sort.Reverse(result_map))
 	for _, v := range result_map {
-		fmt.Print(self.Sentences[v.Key].content + fmt.Sprintf("%.3f", v.Value) + "\n")
+		fmt.Print(v)
+		//fmt.Print(self.Sentences[v.Key].content + fmt.Sprintf("%.3f", v.Value) + "\n")
 	}
 }
 
@@ -142,19 +174,11 @@ func (self *Sentence) BM25(s *Sentence) float64 {
 		}
 
 		var B float64 = (1 - b) + b * (float64(len(s.Words)) / avsl)
-		score += IDF(word) * (float64(tf*(k1+1)) / (float64(tf)+k1*B))
+		score += GetWordIDF(word) * (float64(tf*(k1+1)) / (float64(tf)+k1*B))
 	}
 	return score
 }
 
-func IDF(word string) float64 {
-	len := 6
-	idf, ok := WordIDF[word]
-	if !ok {
-		return math.Log( (float64(float64(len) + 0.5) / 0.5 ))
-	}
-	return idf
-}
 const (
 	k1 = 2.0
 	b = 0.75
@@ -162,10 +186,7 @@ const (
 	ITER = 10
 )
 
-var wordChan = make(chan string)
-var WordDictionary = make(map[string]int)	//一篇文章的词典
-var WordDocumentary = make(map[string]int)	//所有词的词典
-var WordIDF = make(map[string]float64)
+
 
 func run() {
 	idfFile, _ := os.Open("/home/lee/articles/IDF.txt")
@@ -188,6 +209,6 @@ func run() {
 	content := string(c[:])
 
 	article := Article{Sentences:make([]Sentence, 0), content:string(content)}
-	article.segementSentence()
+	//article.segementSentence()
 	article.summary()
 }
