@@ -30,7 +30,7 @@ func SaveWordDictionary() error{
 	defer file.Close()
 	w := bufio.NewWriter(file)
 	for word, count := range WordDictionary {
-		_, err := w.WriteString(fmt.Sprintf(`%s %.6f\n`, word, count))
+		_, err := w.WriteString(fmt.Sprintf("%s %d\n", word, count))
 		if err != nil { return err}
 	}
 	w.Flush()

@@ -84,6 +84,7 @@ func (self *Article)countWord() []string{
 }
 
 func (self *Article) summary() {
+	const ITER = 10
 	n := len(self.Sentences)
 	data := make([]float64, n * n)
 	var t1, t2 int
@@ -161,32 +162,6 @@ func generateMatrix2(raw, col int, num float64) *mat.Dense {
 	}
 	return mat.NewDense(raw, col, data)
 }
-
-func (self *Sentence) BM25(s *Sentence) float64 {
-	var score float64
-	for _, word := range self.Words {
-		word := word
-		var tf int
-		for _, wordc := range s.Words {
-			if word == wordc {
-				tf += 1
-			}
-		}
-
-		var B float64 = (1 - b) + b * (float64(len(s.Words)) / avsl)
-		score += GetWordIDF(word) * (float64(tf*(k1+1)) / (float64(tf)+k1*B))
-	}
-	return score
-}
-
-const (
-	k1 = 2.0
-	b = 0.75
-	avsl = 5.0
-	ITER = 10
-)
-
-
 
 func run() {
 	idfFile, _ := os.Open("/home/lee/articles/IDF.txt")
