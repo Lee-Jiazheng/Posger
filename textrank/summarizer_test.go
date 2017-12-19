@@ -12,9 +12,9 @@ func TestSummarizer(t *testing.T) {
 	if len(errors) != 0{
 		t.Error(errors)
 	}
-	article, err :=  NewArticle(baseDir + "article.pdf", "en")
+	article, err :=  NewArticle(baseDir + "jetbrains.txt", "en")
 	if err != nil {
 		t.Error(err)
 	}
-	article.summary()
+	article.Summarizer()
 }

@@ -36,7 +36,7 @@ func wholeMatrix(raw int, col int, num float64) *mat.Dense{
 	return mat.NewDense(raw, col, data)
 }
 
-func (self *Article) Summarizer() {
+func (self *Article) Summarizer() []string{
 	const ITER = 10
 	n := len(self.Sentences)
 	similarityMartix := self.getSimilarityMatrix(n)
@@ -48,21 +48,28 @@ func (self *Article) Summarizer() {
 		var mMulPR = new(mat.Dense)
 		mMulPR.Mul(similarityMartix, PR)
 		PR.Add(wholeMatrix(n, 1, (1 - SUMMARY_ADJUST)), mMulPR)
-
 		// if converagence, break, the threshold is 0.0001
 	}
-	// sort sentences points
-	result := PR.RawMatrix().Data
-	result_map := make(ByPoint, len(result))
 
-	for p, idf := range result {
+	result_map := sortSentences(PR)
+	result := make([]string, n)
+	for i, v := range *result_map {
+		// assemble all the words, append to the result.
+		result[i] = self.Sentences[v.Key].Words
+		//fmt.Print(self.Sentences[v.Key].content + fmt.Sprintf("%.3f", v.Value) + "\n")
+	}
+
+	return result
+}
+
+func sortSentences(PR *mat.Dense) *ByPoint{
+	// sort sentences points
+	result_map := make(ByPoint, len(PR.RawMatrix().Data))
+	for p, idf := range PR.RawMatrix().Data {
 		result_map[p] = PointMap{p, idf}
 	}
 	sort.Sort(sort.Reverse(result_map))
-	for _, v := range result_map {
-		fmt.Print(v)
-		//fmt.Print(self.Sentences[v.Key].content + fmt.Sprintf("%.3f", v.Value) + "\n")
-	}
+	return &result_map
 }
 
 func (self *Sentence) BM25(s *Sentence) float64 {
