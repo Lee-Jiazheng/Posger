@@ -55,10 +55,8 @@ func (self *Article) Summarizer() []string{
 	result := make([]string, n)
 	for i, v := range *result_map {
 		// assemble all the words, append to the result.
-		result[i] = self.Sentences[v.Key].Words
-		//fmt.Print(self.Sentences[v.Key].content + fmt.Sprintf("%.3f", v.Value) + "\n")
+		result[i] = connectSliceWords(self.Sentences[v.Key].Words...)
 	}
-
 	return result
 }
 
