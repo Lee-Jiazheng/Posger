@@ -4,8 +4,6 @@
     <list default="true" id="cae2dc7c-6054-44b7-bc59-3893931f6943" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/textrank/summarizer.go" afterPath="$PROJECT_DIR$/textrank/summarizer.go" />
-      <change beforePath="$PROJECT_DIR$/textrank/textrank.go" afterPath="$PROJECT_DIR$/textrank/textrank.go" />
-      <change beforePath="$PROJECT_DIR$/textrank/utils.go" afterPath="$PROJECT_DIR$/textrank/utils.go" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -76,8 +74,8 @@
       <file leaf-file-name="summarizer.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/textrank/summarizer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="434">
-              <caret line="58" column="5" lean-forward="true" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
+            <state relative-caret-position="297">
+              <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
               <folding>
                 <element signature="e#18#69#0" expanded="true" />
               </folding>
@@ -478,12 +476,12 @@
       <workItem from="1513602046749" duration="143000" />
       <workItem from="1513645832015" duration="1142000" />
       <workItem from="1513674156443" duration="1423000" />
-      <workItem from="1513676941275" duration="2645000" />
+      <workItem from="1513676941275" duration="2944000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33367000" />
+    <option name="totallyTimeSpent" value="33666000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -568,11 +566,6 @@
           <url>file://$PROJECT_DIR$/textrank/idf.go</url>
           <line>72</line>
           <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/textrank/summarizer.go</url>
-          <line>51</line>
-          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="19" />
@@ -1020,8 +1013,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/textrank/summarizer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
-          <caret line="58" column="5" lean-forward="true" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="5" />
+        <state relative-caret-position="297">
+          <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
           <folding>
             <element signature="e#18#69#0" expanded="true" />
           </folding>

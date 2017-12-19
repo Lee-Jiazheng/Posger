@@ -10,8 +10,33 @@ import (
 
 const SUMMARY_ADJUST = 0.85
 
+func (self *Article) Summarizer() []string{
+	const ITER = 10
+	n := len(self.Sentences)
+	similarityMartix := self.getSimilarityMatrix()
+
+	PR := mat.NewDense(n, 1,  make([]float64, n))
+	for c := 0; c < ITER; c++ {
+		// PR = 0.15 + 0.85 * M * PR
+		// and similarityMatrix is 0.85*M
+		var mMulPR = new(mat.Dense)
+		mMulPR.Mul(similarityMartix, PR)
+		PR.Add(wholeMatrix(n, 1, 1 - SUMMARY_ADJUST), mMulPR)
+		// if converagence, break, the threshold is 0.0001
+	}
+
+	resultMap := sortSentences(PR)
+	result := make([]string, n)
+	for i, v := range *resultMap {
+		// assemble all the words, append to the result.
+		result[i] = connectSliceWords(self.Sentences[v.Key].Words...)
+	}
+	return result
+}
+
 // n is the sentence length
-func (self *Article)getSimilarityMatrix(n int) (* mat.Dense) {
+func (self *Article)getSimilarityMatrix() (* mat.Dense) {
+	n := len(self.Sentences)
 	data := make([]float64, n * n)
 	for i1, s1 := range self.Sentences {
 		s1 := s1
@@ -34,30 +59,6 @@ func wholeMatrix(raw int, col int, num float64) *mat.Dense{
 		data[i] = num
 	}
 	return mat.NewDense(raw, col, data)
-}
-
-func (self *Article) Summarizer() []string{
-	const ITER = 10
-	n := len(self.Sentences)
-	similarityMartix := self.getSimilarityMatrix(n)
-
-	PR := mat.NewDense(n, 1,  make([]float64, n))
-	for c := 0; c < ITER; c++ {
-		// PR = 0.15 + 0.85 * M * PR
-		// and similarityMatrix is 0.85*M
-		var mMulPR = new(mat.Dense)
-		mMulPR.Mul(similarityMartix, PR)
-		PR.Add(wholeMatrix(n, 1, (1 - SUMMARY_ADJUST)), mMulPR)
-		// if converagence, break, the threshold is 0.0001
-	}
-
-	result_map := sortSentences(PR)
-	result := make([]string, n)
-	for i, v := range *result_map {
-		// assemble all the words, append to the result.
-		result[i] = connectSliceWords(self.Sentences[v.Key].Words...)
-	}
-	return result
 }
 
 func sortSentences(PR *mat.Dense) *ByPoint{
