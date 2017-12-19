@@ -13,6 +13,8 @@ import (
 	"io/ioutil"
 	"log"
 	"../EnSegment"
+	"../tika"
+	"context"
 )
 
 type Sentence struct {
@@ -25,13 +27,6 @@ type Article struct {
 	content   string
 }
 
-func (self *Sentence) SegementWords() {
-	fmt.Print("jiebaing")
-	jieba := gojieba.NewJieba()
-	defer jieba.Free()
-	//self.Words = jieba.Cut(self.content, true)
-}
-
 
 func split_sentence(char rune) bool {
 	split_chars := ".!?" + "。！？" + "\n"
@@ -41,6 +36,15 @@ func split_sentence(char rune) bool {
 		}
 	}
 	return false
+}
+
+func NewArticle(filepath, lang string) (*Article, error){
+	article := Article{}
+	content, err :=tika.GetPdfContent(filepath)
+	if err != nil { return nil, err}
+	article.content = content
+	article.segementSentence(lang)
+	return &article, nil
 }
 
 func (self *Article) segementSentence(lang string) {
