@@ -1,7 +1,6 @@
 package textrank
 
 import (
-	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"sort"
 )
@@ -54,7 +53,7 @@ func (self *Article)getSimilarityMatrix() (* mat.Dense) {
 }
 
 func wholeMatrix(raw int, col int, num float64) *mat.Dense{
-	data := make([]float64, raw, col)
+	data := make([]float64, raw*col)
 	for i, _ := range data{
 		data[i] = num
 	}

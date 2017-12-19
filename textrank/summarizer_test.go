@@ -1,6 +1,9 @@
 package textrank
 
-import "testing"
+import (
+	"testing"
+	"fmt"
+)
 
 func TestSummarizer(t *testing.T) {
 	baseDir := "../static/articles/"
@@ -12,9 +15,13 @@ func TestSummarizer(t *testing.T) {
 	if len(errors) != 0{
 		t.Error(errors)
 	}
-	article, err :=  NewArticle(baseDir + "jetbrains.txt", "en")
+	article, err :=  NewArticle(baseDir + "Modeling.pdf", "en")
 	if err != nil {
 		t.Error(err)
 	}
-	article.Summarizer()
+	rank := article.Summarizer()
+	fmt.Println("\n\n")
+	for _, sentence := range rank {
+		fmt.Println(sentence)
+	}
 }

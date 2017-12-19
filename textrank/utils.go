@@ -14,7 +14,7 @@ func isSegmentSymbol(word string) bool {
 func connectSliceWords(words ...string) string {
 	var result string
 	for _, word := range words {
-		result += word
+		result += word + " "
 	}
 	return result
 }
