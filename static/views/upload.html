@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="../js/bootstrap.min.js"></script> 
+
+    <style>
+        .col-center-block{
+            float: none;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-body {
+            background: beige;
+        }
+        .div-radius {
+            border: 2px solid #b3a245;
+            background: aliceblue;
+            border-radius: 2px;
+        }
+
+        @media screen and (min-width: 0px) {
+            .div-index {
+                width: 50px
+            }
+        }
+        @media screen and (min-width: 360px){
+            .div-index {
+                width: 50px
+            }
+        }
+        @media screen and (min-width: 720px){
+            .div-index {
+                width: 100px
+            }
+        }
+        @media screen and (min-width: 1200px) {
+            .div-index {
+                width: 150px
+            }
+        }
+        </style>
+</head>
+<body class="main-body">
+    <div class="container">
+
+        <div class="row ">
+            <div class="col-xs-8 col-md-6 col-center-block">
+
+            <div class="div-index div-radius">呵呵
+                
+            </div>
+            
+            <div class="div-radius">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="exampleInputEmail3" placeholder="File URL">
+                    </div>
+                    <button type="submit" class="btn btn-default">Download</button>
+                </form>
+
+                <form enctype="multipart/form-data" method="POST" class="form-inline">
+                    <div class="form-group">
+                        <input type="file" name="file" class="btn btn-danger">
+                    </div>
+                    <input type="submit" value="Upload" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

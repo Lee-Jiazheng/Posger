@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/styles.css" rel="stylesheet">
+        <link href="/static/css/bootstrap-social.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.css" rel="stylesheet">
+        
+        <title>Index Page</title>
+    </head>
+
+    <body>
+        <form action="/summarize/paper" method="post">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                Please select upload file.
+                            </div>
+                            <div class="card-body" style="height: 10rem;">
+                                <div class="container">
+                                    <label class="custom-file" style="width: 100%">
+                                        <input type="file" id="file" class="custom-file-input">
+                                        <span class="custom-file-control form-control-file"></span>
+                                    </label>
+                                </div>
+                                
+                            </div>
+                            <div class="card-footer text-right">
+                                <button type="submit" class="btn btn-primary" id="upload-btn" disabled>Upload</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </body>
+
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/tether.min.js"></script>    
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+        $('.custom-file-input').on('change',function(){
+            var fileName = $(this).val().split('\\').slice(-1)[0];
+            $(this).next('.form-control-file').addClass("selected").html(fileName);
+            $('#upload-btn').removeAttr('disabled')
+        })
+    </script>
+
+
+</html>

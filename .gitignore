@@ -1,0 +1,5 @@
+/images/*.jpg
+.idea/
+static/views/index+.html
+static/images/*.jpg
+static/templates/poster*/
