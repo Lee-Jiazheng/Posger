@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../css/styles.css" rel="stylesheet">
+        <link href="../css/bootstrap-social.css" rel="stylesheet">
+        <link href="../css/font-awesome.css" rel="stylesheet">
+        <link href="../css/jqcloud.css" rel="stylesheet">
+        
+        <title>Index Page</title>
+    </head>
+
+    <body>
+        <!-- nav bar -->
+        <header class="jumbotron">
+            <div class="row justify-content-center align-items-center" class="text-align: center">
+                <div class="col-lg-3 hidden-md-down">
+                    <div class="">
+                        <h1>Reference:</h1>
+                            <ul>
+                                <li><a>First Document</a></li>
+                                <li>Second Document</li>
+                                <li>Third Document</li>
+                            </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                        <div id="keywords" style="width: 450px; height: 250px;"></div>
+                </div>
+                <div class="col-lg-3 hidden-md-down">123</div>                
+            </div>
+        </header>
+        <div class="row">
+
+        </div>
+    </body>
+
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/tether.min.js"></script>    
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jqcloud-1.0.4.js"></script>
+
+    <script>
+        // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
+        var word_array = [
+            {text: "财务", weight: 10},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},
+            {text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
+            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
+            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
+            {text: "Sit", weight: 7},
+            {text: "Amet", weight: 5},
+            ];
+        $(function() {
+            $("#keywords").jQCloud(word_array)
+        });
+    </script>
+</html>
