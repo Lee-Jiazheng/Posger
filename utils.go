@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type Error struct {
@@ -13,6 +14,18 @@ type Error struct {
 
 func (self Error) Error() string {
 	return self.error
+}
+
+// purifyContent puries a list of string, delete invisible characters.
+func purifyContent(contents ...string) (res []string){
+	for _, content := range contents {
+		//judge type, primary type or
+		for _, ch := range []string{"\n", " "} {
+			content = strings.Replace(content, ch, "", -1)
+		}
+		res = append(res, content)
+	}
+	return
 }
 
 func PutRequest(url string, body io.Reader) (string, error) {

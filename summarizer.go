@@ -62,6 +62,8 @@ type Sentence struct {
 }
 
 type Article struct {
+	Abastract	string		// summary by author, abstract in paper
+	Keywords	[]string	// keywords in paper
 	Sentences []Sentence
 	filepath  string
 }
@@ -97,7 +99,7 @@ func (self *Article) Summary() []string {
 		// assemble all the words, append to the result.
 		result[i] = connectSliceWords(self.Sentences[v.Key].Words...)
 	}
-	return result
+	return purifyContent(result...)
 }
 
 func sortSentences(PR *mat.Dense) *ByPoint {

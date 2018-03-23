@@ -9,7 +9,7 @@ func jiebaSentenceSegmentation(article *Article, content string) {
 	s := 0
 	for e, word := range words {
 		if canSegment(word) {
-			article.Sentences = append(article.Sentences, Sentence{words[s : e+1], 0})
+			article.Sentences = append(article.Sentences, Sentence{words[s: e+1], 0})
 			s = e + 1
 		}
 	}
