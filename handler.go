@@ -1,14 +1,17 @@
 package Posger
 
 import (
+	"bytes"
 	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
 	"html/template"
 	"io"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
 	"time"
+	"fmt"
 )
 
 var (
@@ -29,7 +32,8 @@ func RunServer() {
 	summary_router := router.PathPrefix("/summarize").Subrouter()
 	summary_router.HandleFunc("/upload", uploadView).Methods("GET")
 	summary_router.HandleFunc("/upload", uploadPaper).Methods("POST")
-	summary_router.HandleFunc("/paper/{paperId}", summarizePaper).Methods("GET")
+	summary_router.HandleFunc("/poster/{paperId}", summarizePaper).Methods("GET")
+	summary_router.HandleFunc("/info/{paperId}", articleInfo).Methods("GET")
 
 	registerOauth2App(router.PathPrefix("/oauth2").Subrouter())
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
@@ -71,4 +75,20 @@ func uploadPaper(w http.ResponseWriter, r *http.Request) {
 func summarizePaper(w http.ResponseWriter, r *http.Request) {
 	//vars := mux.Vars(r)
 	//vars["paperId"]
+	t, _ := template.ParseFiles("static/views/sum_template.html")
+	t.Execute(w, nil)
+}
+
+func articleInfo(w http.ResponseWriter, r *http.Request) {
+	//vars := mux.Vars(r)
+	//vars["paperId"]
+	article, err := NewJsonArticle("static/articles/大数据时代我国企业财务共享中心的优化.pdf")
+	if err != nil {
+		//404
+	}
+	if d, err := json.Marshal(article); err != nil {
+		fmt.Print(err)
+	} else {
+		io.Copy(w, bytes.NewReader(d))
+	}
 }

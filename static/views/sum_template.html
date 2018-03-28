@@ -3,11 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-        <link href="../css/bootstrap.css" rel="stylesheet">
-        <link href="../css/styles.css" rel="stylesheet">
-        <link href="../css/bootstrap-social.css" rel="stylesheet">
-        <link href="../css/font-awesome.css" rel="stylesheet">
-        <link href="../css/jqcloud.css" rel="stylesheet">
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/styles.css" rel="stylesheet">
+        <link href="/static/css/bootstrap-social.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.css" rel="stylesheet">
+        <link href="/static/css/jqcloud.css" rel="stylesheet">
         
         <title>Index Page</title>
     </head>
@@ -63,12 +63,15 @@
         </div>
     </body>
 
-    <script src="../js/jquery-3.2.1.min.js"></script>
-    <script src="../js/tether.min.js"></script>    
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/jqcloud-1.0.4.js"></script>
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/tether.min.js"></script>    
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jqcloud-1.0.4.js"></script>
 
     <script>
+        $(document).ready(function() {
+
+        });
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
         var word_array = [
             {text: "财务", weight: 10},
@@ -107,7 +110,16 @@
             {text: "Amet", weight: 5},
             ];
         $(function() {
+            $.get("../info/1", function(data, status) {
+                data = JSON.parse(data)
+                //TODO: Keywords's weight
+                data.Abstract
+                console.log(data)
+                debugger;
+            });
             $("#keywords").jQCloud(word_array)
+
+
         });
     </script>
 </html>

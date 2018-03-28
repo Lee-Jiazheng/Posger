@@ -13,6 +13,7 @@ func jiebaSentenceSegmentation(article *Article, content string) {
 			s = e + 1
 		}
 	}
+	article.Sentences = append(article.Sentences, Sentence{words[s:], 0})
 }
 
 func jiebaWordSegmentation(sentence string) []string {

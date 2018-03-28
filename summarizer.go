@@ -37,6 +37,27 @@ func init() {
 	log.Println("wordDict loading end, word count is " + fmt.Sprintf("%d", articleCount))
 }
 
+
+type baseArticle struct {
+	Abstract	string		// summary by author, abstract in paper
+	Keywords	[]string	// keywords in paper
+	References	[]string	// multi references
+	Title		string		// article's title
+}
+
+type jsonArticle struct {
+	baseArticle
+	content		[]string	// summary Content
+}
+
+func NewJsonArticle(filepath string) (*jsonArticle, error) {
+	article, err := NewArticle(filepath)
+	if err != nil {
+		return nil, err
+	}
+	return &jsonArticle{baseArticle: article.baseArticle, content: article.Summary()}, nil
+}
+
 // NewArticle use filepath parameter to construct a
 // segmented article
 func NewArticle(filepath string) (*Article, error) {
@@ -45,6 +66,8 @@ func NewArticle(filepath string) (*Article, error) {
 	if err != nil {
 		return nil, err
 	}
+	article.setMeta(content)
+	fmt.Print(content)
 	article.segmentation(content)
 	return article, nil
 }
@@ -56,16 +79,78 @@ func (self *Article) segmentation(content string) {
 	jiebaSentenceSegmentation(self, content)
 }
 
+// By analysising the rules, we can get the infomation
+// i.e. author, title, abstract, reference, acknowledge
+func (self *Article) setMeta(content string) (c string){
+	// Consider the condition that we can't find below "keywords"
+
+	sum_s, sum_e := self.getSummaryIndex(content)
+	self.setSummaryIndex(content[sum_s:sum_e])
+	content = content[sum_e:]
+
+	key_s, key_e := self.getKeywordsIndex(content[:])
+	self.setKeywordsIndex(content[key_s:key_e])
+
+	ref_s, ref_e := self.getReferenceIndex(content)
+	self.setReferenceIndex(content[ref_s:ref_e])
+
+	return content[key_e: ref_s]
+}
+
+func (self *Article) getSummaryIndex(content string) (s, e int) {
+	s = strings.LastIndex(content[:strings.Index(content, "摘 要")], "\n")
+	e = strings.LastIndex(content[:strings.Index(content, "关键词")], "\n") + 1
+	return
+}
+
+func (self *Article) setSummaryIndex(abstract string) {
+	self.Abstract = strings.Replace(abstract, "\n", "", -1)
+}
+
+func (self *Article) setTitleAndAuthor(content string) {
+
+}
+
+func (self *Article) getKeywordsIndex(content string) (s, e int) {
+	e = strings.Index(content[:], "\n")
+	return
+}
+
+func (self *Article) setKeywordsIndex(keywords string) {
+	self.Keywords = strings.Split(keywords, " ")
+}
+
+func (self *Article) getReferenceIndex(content string) (s, e int) {
+	s = strings.LastIndex(content[:strings.LastIndex(content, "参考文献")], "\n") + 1
+	e = len(content)
+	return
+}
+
+func (self *Article) setReferenceIndex(reference string) {
+	// First is 参考文献
+	// By [1] [2] ... rule consists an array.
+	var pos []int; res := strings.Split(reference, "\n")
+	for i, r := range res[1:] {
+		if strings.HasPrefix(r, fmt.Sprintf("[%d]", len(pos) + 1)) {
+			pos = append(pos, i)
+		}
+	}
+	pos = append(pos, len(res))
+	for i, p := range pos[:len(pos)-1] {
+		self.References = append(self.References, strings.Join(purifyContent(res[p:pos[i+1]]...), ""))
+	}
+
+}
+
 type Sentence struct {
 	Words []string
 	Point float64
 }
 
 type Article struct {
-	Abastract	string		// summary by author, abstract in paper
-	Keywords	[]string	// keywords in paper
-	Sentences []Sentence
+	baseArticle
 	filepath  string
+	Sentences []Sentence
 }
 
 func getWordIdf(word string) float64 {
