@@ -19,7 +19,8 @@
                 <div class="col-lg-3 hidden-md-down">
                     <div class="">
                         <h1>Reference:</h1>
-                            <ul>
+                            <ul id="ref_list">
+                                <li>...</li>
                                 <li><a>First Document</a></li>
                                 <li>Second Document</li>
                                 <li>Third Document</li>
@@ -41,6 +42,11 @@
             <div class="container">
                 <div class="offset-md-2 col-md-6 offset-xs-0 col-xs-12">
                     <h1>Title</h1>
+                    <div class="row">
+                        <div >
+                            <span id="abstract"></span>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             img
@@ -73,49 +79,25 @@
 
         });
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
-        var word_array = [
-            {text: "财务", weight: 10},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},
-            {text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},{text: "Amet", weight: 5},
-            {text: "Ipsum", weight: 9, link: "http://baidu.com/"},
-            {text: "Dolor", weight: 6, html: {title: "I can haz any html attribute"}},
-            {text: "Sit", weight: 7},
-            {text: "Amet", weight: 5},
-            ];
+        var word_array = []
         $(function() {
             $.get("../info/1", function(data, status) {
                 data = JSON.parse(data)
                 //TODO: Keywords's weight
-                data.Abstract
+                $("#abstract").text(data.Abstract)
+                $("#ref_list").empty()
+                $.each(data.References.slice(0, 3), function (index, value) {
+                    $("#ref_list").append("<li>" + value + "</li>")
+                })
+                for (var i = 0; i < data.Keywords.length; i++) {
+                    word_array.push({
+                        text: data.Keywords[i]
+                    })
+                }
                 console.log(data)
                 debugger;
+                $("#keywords").jQCloud(word_array)
+
             });
             $("#keywords").jQCloud(word_array)
 
