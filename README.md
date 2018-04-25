@@ -29,3 +29,6 @@ docker run --rm -p 9998:9998 logicalspark/docker-tikaserver
 ## 技术难点:
 1. pdf 提取图片
 2. 把static目录设为根目录， html模版。
+
+## TODO:
+1. 数据库连接池，如mybatis。

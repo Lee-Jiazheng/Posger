@@ -51,7 +51,12 @@ func RunServer() {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/index.html")
-	t.Execute(w, nil)
+	var userId, _ = r.Cookie("user")
+	if userId == nil {
+		t.Execute(w, nil)
+	} else {
+ 		t.Execute(w, SelectUser(userId.Value))
+	}
 }
 
 func uploadView(w http.ResponseWriter, r *http.Request) {
