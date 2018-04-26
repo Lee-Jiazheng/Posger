@@ -36,9 +36,18 @@
 
                 <span class="navbar-text">
                     {{ if . }}
-                        <a class="active" href="#" style="color: yellow;">
-                            <span class="mr-1">{{.Username}}</span><img class="rounded-circle" style="width: 25px; height: 25px;" src="{{.Avatar}}" alt="头像"/>
-                        </a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info">{{.Username}}</button>
+                            <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                          <div class="dropdown-menu">
+                              <a class="dropdown-item" href="#"><span>Settings</span><img class="rounded-circle" style="width: 25px; height: 25px; float: right;" src="{{.Avatar}}" alt="头像"/></a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item btn btn-danger" href="/api/logout">Sign out</a>
+                          </div>
+                        </div>
+
                     {{else }}
                         <a data-toggle="modal" data-target="#loginModal">
                             <span class="fa fa-sign-in mr-1"></span>Login
@@ -52,13 +61,13 @@
     <div class="modal fade" role="dialog" id="loginModal">
         <div class="modal-dialog" role="content">
             <div class="modal-content">
-                <form>
+                <form method="get" action="/api/login" id="login-form">
                     <div class="modal-header">
                         <h4 class="modal-title">Login</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
-                    <div class="modal-body">
+                    <div class="modal-body" id="login-body">
                         <div class="form-group row">
                             <label for="firstname" class="col-md-3 col-form-label">First Name</label>
                             <div class="col-md-9">
@@ -195,6 +204,31 @@
     <script src="/static/js/jquery.cookie.js"></script>
     <script>
         $(document).ready(function(){
+            /**
+             * Login Function,,, ajax-api, If login successfully, refresh the page.
+             * If not, show the error msg.*/
+            $("#login-form").submit(function (event) {
+                event.preventDefault()
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (msg) {
+                        if (JSON.parse(msg).error) {
+                            $("#login-body").prepend('<div class="alert alert-dismissible alert-danger fade show" role="alert">\n' +
+                                    '           <span id="login-alert-content">' + JSON.parse(msg).error + '</span>\n' +
+                                    '               <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                                    '                   <span aria-hidden="true">&times;</span>\n' +
+                                    '               </button>\n' +
+                                    '      </div>')
+                        } else {
+                            // login successfully, refresh the page
+                            location.reload()
+                        }
+                    },
+                })
+            })
             /**
              * Carousel picture in the index page*/
             $('#mycarousel').click(function(){

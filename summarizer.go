@@ -12,6 +12,8 @@ import (
 	"gonum.org/v1/gonum/mat"
 	"math"
 	"sort"
+	"github.com/gorilla/mux"
+	"net/http"
 )
 
 var (
@@ -36,6 +38,30 @@ func init() {
 	}
 	log.Println("wordDict loading end, word count is " + fmt.Sprintf("%d", articleCount))
 }
+
+// PathPrefix is api, uploading files api and so on.
+func registeSummaryApi(router *mux.Router) {
+	router.HandleFunc("/paper", getPaperApi).Methods("GET")
+	//router.HandleFunc("/paper/{paperId}", ).Methods("GET")
+	//router.HandleFunc("/paper", addPaper).Methods("POST")
+	router.HandleFunc("/paper", del).Methods("DELETE")
+}
+
+
+func getPaper(username string) (string){
+	return "login have been"
+}
+
+func getPaperApi(w http.ResponseWriter, r *http.Request) {
+	RequireLoginApi(w, r, getPaper)
+}
+
+func del(w http.ResponseWriter, r *http.Request) {
+
+}
+
+
+
 
 
 type baseArticle struct {

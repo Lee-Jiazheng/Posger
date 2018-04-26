@@ -7,11 +7,11 @@ import (
 	"html/template"
 	"io"
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"time"
 	"fmt"
+	"log"
 )
 
 var (
@@ -29,13 +29,14 @@ func RunServer() {
 
 	//train_router := router.PathPrefix("/train").Subrouter()
 	
-	summary_router := router.PathPrefix("/summarize").Subrouter()
+	summary_router := router.PathPrefix("/digest").Subrouter()
 	summary_router.HandleFunc("/upload", uploadView).Methods("GET")
 	summary_router.HandleFunc("/upload", uploadPaper).Methods("POST")
 	summary_router.HandleFunc("/poster/{paperId}", summarizePaper).Methods("GET")
 	summary_router.HandleFunc("/info/{paperId}", articleInfo).Methods("GET")
 
-	registerOauth2App(router.PathPrefix("/oauth2").Subrouter())
+	registeOauth2App(router.PathPrefix("/oauth2").Subrouter())
+	registeAjaxApi(router.PathPrefix("/api").Subrouter())
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 
@@ -45,17 +46,22 @@ func RunServer() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Println("Server listened at " + "http://127.0.0.1:8080")
-	log.Fatal(srv.ListenAndServe())
+	log.Println("Server listened at " + "http://" + hostAddress)
+	Logger.Fatalln(srv.ListenAndServe())
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/index.html")
-	var userId, _ = r.Cookie("user")
-	if userId == nil {
+	var username, _ = r.Cookie("user")
+	if username == nil {
 		t.Execute(w, nil)
 	} else {
- 		t.Execute(w, SelectUser(userId.Value))
+		users := SelectUser(map[string]interface{}{"username": username.Value})
+		if len(users) == 1 {
+			t.Execute(w, users[0])
+		} else {
+			t.Execute(w, nil)
+		}
 	}
 }
 

@@ -5,12 +5,33 @@ const (
 	MONGO_DB_SEVER = "mongodb://localhost:27017"	// mongodb's running port.
 )
 
-func AddUser(user User) error {
-	return GetDatabaseConncect(DATABASE).AddUser(user)
+func AddUser(user User) {
+	if len(SelectUser(map[string]interface{}{"userid": user.UserId})) != 0 {
+		Logger.Printf("the userId has existed database, %s\n", user)
+		return
+	}
+	if err := GetDatabaseConncect(DATABASE).AddUser(user); err != nil {
+		Logger.Fatalf("Add user failed, %s\n", user.Username)
+	}
 }
 
-func SelectUser(username string) User {
-	return GetDatabaseConncect(DATABASE).SelectUser(username)
+// Filter condition, e.g.: map[string]interface{}{"username": username, "source": "github"}
+func SelectUser(filter map[string]interface{}) []User {
+	return GetDatabaseConncect(DATABASE).SelectUser(filter)
+}
+
+func AddPaper(paper Paper) {
+	if len(SelectUser(map[string]interface{}{"username": paper.Owner})) == 0 {
+		Logger.Fatalln("the username didn't exist, " + paper.Owner)
+		return
+	}
+	if err := GetDatabaseConncect(DATABASE).AddPaper(paper); err != nil {
+		Logger.Fatalf("Add paper failed, %s, %s\n", paper, err)
+	}
+}
+
+func SelectPaper(filter map[string]interface{}) []Paper{
+	return GetDatabaseConncect(DATABASE).SelectPaper(filter)
 }
 
 

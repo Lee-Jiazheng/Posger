@@ -21,34 +21,7 @@ func init() {
 		"a5676195554a7d261ec6", "ba3d6e931b73785441aa4e1a0ab1966bc689e936", "http://localhost:8080/oauth2/github/token",}
 }
 
-type githubUser struct {
-	// Following is tags.
-	Login             string `json:"login"`
-	ID                int    `json:"id"`
-	AvatarURL         string `json:"avatar_url"`
-	GravatarID        string `json:"gravatar_id"`
-	URL               string `json:"url"`
-	HTMLURL           string `json:"html_url"`
-	FollowersURL      string `json:"followers_url"`
-	FollowingURL      string `json:"following_url"`
-	GistsURL          string `json:"gists_url"`
-	StarredURL        string `json:"starred_url"`
-	SubscriptionsURL  string `json:"subscriptions_url"`
-	OrganizationsURL  string `json:"organizations_url"`
-	ReposURL          string `json:"repos_url"`
-	EventsURL         string `json:"events_url"`
-	ReceivedEventsURL string `json:"received_events_url"`
-	Type              string `json:"type"`
-	SiteAdmin         bool   `json:"site_admin"`
-	Name              string `json:"name"`
-	Bio				  string `json: "bio"`
-}
-
-func newGithubUser() (interface{}){
-	return &githubUser{}
-}
-
-func registerOauth2App(router *mux.Router) {
+func registeOauth2App(router *mux.Router) {
 	router.HandleFunc("/{incName}/redirect", oauth2Factory).Methods("GET")
 	router.HandleFunc("/{incName}/token", oauth2FactoryToken).Methods("GET")
 }
@@ -129,4 +102,27 @@ type oauth2Token struct {
 	access_token	string
 	scope 			string
 	token_type		string
+}
+
+type githubUser struct {
+	// Following is tags.
+	Login             string `json:"login"`
+	ID                int    `json:"id"`
+	AvatarURL         string `json:"avatar_url"`
+	GravatarID        string `json:"gravatar_id"`
+	URL               string `json:"url"`
+	HTMLURL           string `json:"html_url"`
+	FollowersURL      string `json:"followers_url"`
+	FollowingURL      string `json:"following_url"`
+	GistsURL          string `json:"gists_url"`
+	StarredURL        string `json:"starred_url"`
+	SubscriptionsURL  string `json:"subscriptions_url"`
+	OrganizationsURL  string `json:"organizations_url"`
+	ReposURL          string `json:"repos_url"`
+	EventsURL         string `json:"events_url"`
+	ReceivedEventsURL string `json:"received_events_url"`
+	Type              string `json:"type"`
+	SiteAdmin         bool   `json:"site_admin"`
+	Name              string `json:"name"`
+	Bio				  string `json: "bio"`
 }
