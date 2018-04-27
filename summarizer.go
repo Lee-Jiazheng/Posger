@@ -16,7 +16,6 @@ import (
 	"encoding/json"
 	"github.com/satori/go.uuid"
 	"bytes"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -47,7 +46,7 @@ func registeSummaryApi(router *mux.Router) {
 	router.HandleFunc("/paper", getPaperApi).Methods("GET")
 	//router.HandleFunc("/paper/{paperId}", ).Methods("GET")
 	router.HandleFunc("/paper", uploadPaperApi).Methods("POST")
-	router.HandleFunc("/paper", del).Methods("DELETE")
+	router.HandleFunc("/paper/{paperId}", delPaperApi).Methods("DELETE")
 }
 
 
@@ -60,11 +59,7 @@ func getPaper(username string) ([]byte){
 }
 
 func getPaperApi(w http.ResponseWriter, r *http.Request) {
-	RequireLoginApi(w, r, getPaper)
-}
-
-func del(w http.ResponseWriter, r *http.Request) {
-
+	RequireLoginApi(w, r, getPaper, "")
 }
 
 // Upload pdf files to the server
@@ -77,7 +72,8 @@ func uploadPaperApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer up_file.Close()
-	path := "static/articles/" + uuid.Must(uuid.NewV4()).String()
+	id := uuid.Must(uuid.NewV4()).String()		// paper's unique id
+	path := "static/articles/" + id
 	new_f, err := os.Create(path)
 	if err != nil {
 		Logger.Fatalln("Create File failed, path is ", path)
@@ -86,17 +82,27 @@ func uploadPaperApi(w http.ResponseWriter, r *http.Request) {
 	io.Copy(new_f, up_file)			// copy content to the new fiel
 
 	// Check login
-	id := bson.NewObjectId()
 	go AddPaper(Paper{PaperId: id, Owner: isLogin(r), Path: path, Name: hd.Filename})
 
 	returnJson, _ := json.Marshal(struct {
-		Url		string			`json:"url"`
-		Key			string		`json:"key"`
-	}{"/api/digest/paper", id.String()})
+		Url		string		`json:"url"`
+		Key		string		`json:"id"`
+	}{"/api/digest/paper", id})
 	io.Copy(w, bytes.NewReader(returnJson))
-
-	// Check Login
 }
+
+func delPaper(paperId string) []byte {
+	DeletePaper(map[string]interface{}{"paperid": paperId})
+	res, _ :=json.Marshal(struct {
+		Msg	string	`json:"msg"`
+	}{"deleteSuccess"})
+	return res
+}
+
+func delPaperApi(w http.ResponseWriter, r *http.Request) {
+	RequireLoginApi(w, r, delPaper, mux.Vars(r)["paperId"])
+}
+
 
 type baseArticle struct {
 	Abstract	string		// summary by author, abstract in paper

@@ -2,7 +2,7 @@ package Posger
 
 import (
 	"testing"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/satori/go.uuid"
 )
 
 func TestInsertMongodb(t *testing.T) {
@@ -20,9 +20,13 @@ func TestSelectMongodb(t *testing.T) {
 }
 
 func TestInsertPaper(t *testing.T) {
-	AddPaper(Paper{PaperId: bson.NewObjectId(), Owner:"g", Path:"2"})
+	AddPaper(Paper{PaperId: uuid.Must(uuid.NewV4()).String(), Owner:"gajanlee", Path:"2"})
 }
 
 func TestSelectPaper(t *testing.T) {
 	t.Log(SelectPaper(map[string]interface{}{"owner": "g"}))
+}
+
+func TestDeletePaper(t *testing.T) {
+	DeletePaper(map[string]interface{}{"paperid": "a57c96ba-24cd-4833-9a8b-6815a2ab757e"})
 }

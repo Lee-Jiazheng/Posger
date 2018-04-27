@@ -17,12 +17,16 @@ func registeAjaxApi(router *mux.Router) {
 
 // API's required login decorator.
 // The f's parameters is filter, return string is json string.
-func RequireLoginApi(w http.ResponseWriter, r *http.Request, f func(string) []byte) {
+func RequireLoginApi(w http.ResponseWriter, r *http.Request, f func(string) []byte, param string) {
 	user, err := r.Cookie("user")
 	if err != nil {
 		io.Copy(w, bytes.NewReader([]byte(`{"error": "Please login first"}`)))
 	} else {
-		io.Copy(w, bytes.NewReader(f(user.Value)))
+		if param == "" {
+			io.Copy(w, bytes.NewReader(f(user.Value)))
+		} else {
+			io.Copy(w, bytes.NewReader(f(param)))
+		}
 	}
 }
 

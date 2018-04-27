@@ -2,7 +2,6 @@ package Posger
 
 import (
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 /** Databaser is An abstract factory interface, if you want to add a new database backend, you must implement all function*/
@@ -106,7 +105,9 @@ func (self MongodbUser) SelectUser(filter map[string]interface{}) ([]User) {
 /** Next is user's paper mongodb implementation */
 type Paper struct {
 	// mongodb's object id
-	PaperId bson.ObjectId	`bson:"_id"`
+	//PaperId bson.ObjectId	`bson:"_id"`
+	// a unique id, supposed to be a uuid
+	PaperId	string
 	// paper owner's username
 	Owner	string
 	// paper saved path
@@ -118,6 +119,7 @@ type Paper struct {
 type iPaper interface {
 	AddPaper(paper Paper) (error)
 	SelectPaper(filter map[string]interface{}) ([]Paper)
+	DeletePaper(filter map[string]interface{})
 }
 
 type MongodbPaper struct {
@@ -148,6 +150,16 @@ func (self MongodbPaper) SelectPaper(filter map[string]interface{}) ([]Paper) {
 		Logger.Fatalf("Find Paper Error, %s\n", err)
 	}
 	return res
+}
+
+func (self MongodbPaper) DeletePaper(filter map[string]interface{}) {
+	session := getMongodbSession()
+	defer session.Close()
+	c := session.DB(self.database).C(self.collection)
+	err := c.Remove(filter)
+	if err != nil {
+		Logger.Fatalf("Find Paper Error, %s\n", err)
+	}
 }
 
 /**

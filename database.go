@@ -36,6 +36,15 @@ func SelectPaper(filter map[string]interface{}) []Paper{
 	return GetDatabaseConncect(DATABASE).SelectPaper(filter)
 }
 
+func DeletePaper(filter map[string]interface{}) {
+	if len(SelectPaper(filter)) == 0 {
+		Logger.Fatalln("the paper filter condition found none paper, ", filter)
+		return
+	} else {
+		GetDatabaseConncect(DATABASE).DeletePaper(filter)
+	}
+}
+
 
 // TODO: It mantains definitive database connection session.
 type ConnPool interface {

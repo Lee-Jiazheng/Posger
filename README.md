@@ -32,3 +32,7 @@ docker run --rm -p 9998:9998 logicalspark/docker-tikaserver
 
 ## TODO:
 1. 数据库连接池，如mybatis。
+
+## Bug:
+1. 程序异常崩溃,如panic会导致JVM崩溃，无法重新启动Tika，导致程序无法正常启动。
+
