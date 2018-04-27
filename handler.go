@@ -37,8 +37,8 @@ func RunServer() {
 
 	registeOauth2App(router.PathPrefix("/oauth2").Subrouter())
 	registeAjaxApi(router.PathPrefix("/api").Subrouter())
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	srv := &http.Server{
 		Handler:      router,
@@ -64,6 +64,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// Check login function.
+func isLogin(r *http.Request) string {
+	username, err := r.Cookie("user")
+	if  err != nil {
+		return "anonymous"
+	} else {
+		return username.Value
+	}
+}
+
 
 func uploadView(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/upload.html")

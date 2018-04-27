@@ -4,3 +4,4 @@ static/views/index+.html
 static/images/*.jpg
 static/templates/poster*/
 *.log
+static/articles/

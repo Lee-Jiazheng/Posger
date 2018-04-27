@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	//"gopkg.in/mgo.v2"
 	"fmt"
 	"log"
 	"gonum.org/v1/gonum/mat"
@@ -14,6 +13,10 @@ import (
 	"sort"
 	"github.com/gorilla/mux"
 	"net/http"
+	"encoding/json"
+	"github.com/satori/go.uuid"
+	"bytes"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -39,17 +42,21 @@ func init() {
 	log.Println("wordDict loading end, word count is " + fmt.Sprintf("%d", articleCount))
 }
 
-// PathPrefix is api, uploading files api and so on.
+// PathPrefix is api/digest, uploading files api and so on.
 func registeSummaryApi(router *mux.Router) {
 	router.HandleFunc("/paper", getPaperApi).Methods("GET")
 	//router.HandleFunc("/paper/{paperId}", ).Methods("GET")
-	//router.HandleFunc("/paper", addPaper).Methods("POST")
+	router.HandleFunc("/paper", uploadPaperApi).Methods("POST")
 	router.HandleFunc("/paper", del).Methods("DELETE")
 }
 
 
-func getPaper(username string) (string){
-	return "login have been"
+func getPaper(username string) ([]byte){
+	res, _ := json.Marshal(struct {
+		Meta	string
+		Data	[]Paper		`json:"data"`
+	}{Data: SelectPaper(map[string]interface{}{"owner": username})})
+	return res
 }
 
 func getPaperApi(w http.ResponseWriter, r *http.Request) {
@@ -60,9 +67,36 @@ func del(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Upload pdf files to the server
+// Warning: If you have logged in the system, You can save the files, and save the relationships to the database
+// If not, only detect the result poster once.
+func uploadPaperApi(w http.ResponseWriter, r *http.Request) {
+	up_file, hd, err := r.FormFile("digest-upload[]")
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	defer up_file.Close()
+	path := "static/articles/" + uuid.Must(uuid.NewV4()).String()
+	new_f, err := os.Create(path)
+	if err != nil {
+		Logger.Fatalln("Create File failed, path is ", path)
+	}
+	defer new_f.Close()
+	io.Copy(new_f, up_file)			// copy content to the new fiel
 
+	// Check login
+	id := bson.NewObjectId()
+	go AddPaper(Paper{PaperId: id, Owner: isLogin(r), Path: path, Name: hd.Filename})
 
+	returnJson, _ := json.Marshal(struct {
+		Url		string			`json:"url"`
+		Key			string		`json:"key"`
+	}{"/api/digest/paper", id.String()})
+	io.Copy(w, bytes.NewReader(returnJson))
 
+	// Check Login
+}
 
 type baseArticle struct {
 	Abstract	string		// summary by author, abstract in paper

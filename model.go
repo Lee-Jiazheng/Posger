@@ -13,7 +13,7 @@ type Databaser interface {
 
 func GetDatabaseConncect(db string) (Databaser) {
 	if db == "mongodb" { return newMongodb()}
-	Logger.Fatalln("db is not the validate database backend.")
+	Logger.Fatalln("database is not the validate database backend.")
 	return nil
 }
 
@@ -111,6 +111,8 @@ type Paper struct {
 	Owner	string
 	// paper saved path
 	Path	string
+	// paper upload origin name
+	Name	string
 }
 
 type iPaper interface {

@@ -264,7 +264,7 @@
 
             $("#digest-upload").fileinput({
                 theme: "explorer-fa",
-                uploadUrl: "/file-upload-batch/2",
+                uploadUrl: "/api/digest/paper",
                 minFileCount: 1,
                 maxFileCount: 5,
                 overwriteInitial: false,
@@ -284,7 +284,7 @@
                 initialPreviewAsData: true, // defaults markup
                 initialPreviewConfig: [
                     {caption: "Image 11.jpg", size: 762980, url: "/site/file-delete", downloadUrl: 'https://picsum.photos/800/460?image=11', key: 11},
-                    {previewAsData: false, size: 823782, caption: "Image 13.jpg", url: "/site/file-delete", downloadUrl: 'https://picsum.photos/800/460?image=13', key: 13},
+                    {previewAsData: false, size: 823782, caption: "Image 13.jpg", url: "/api/digest/paper", downloadUrl: 'https://picsum.photos/800/460?image=13', key: 13},
                     {caption: "Lorem Ipsum.txt", type: "text", size: 1430, url: "/site/file-delete", key: 12},
                     {type: "pdf", size: 8000, caption: "PDF Sample.pdf", url: "/site/file-delete", key: 14},
                     {type: "video", size: 375000, filetype: "video/mp4", caption: "Krajee Sample.mp4", url: "/site/file-delete", key: 15}
@@ -331,7 +331,13 @@
                         return ext.match(/(mp3|wav)$/i);
                     }
                 }
+            }).on('fileuploaded', function(event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra,
+                    response = data.response, reader = data.reader;
+                debugger
+                console.log('File uploaded triggered');
             });
+
 
         });
     </script>

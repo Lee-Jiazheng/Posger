@@ -1,5 +1,6 @@
 package Posger
 
+
 const (
 	DATABASE = "mongodb"		// designated the using database
 	MONGO_DB_SEVER = "mongodb://localhost:27017"	// mongodb's running port.
@@ -21,6 +22,7 @@ func SelectUser(filter map[string]interface{}) []User {
 }
 
 func AddPaper(paper Paper) {
+	//paper.PaperId = bson.NewObjectId()
 	if len(SelectUser(map[string]interface{}{"username": paper.Owner})) == 0 {
 		Logger.Fatalln("the username didn't exist, " + paper.Owner)
 		return
