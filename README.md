@@ -32,6 +32,14 @@ docker run --rm -p 9998:9998 logicalspark/docker-tikaserver
 
 ## TODO:
 1. 数据库连接池，如mybatis。
+1. qa 的数据库设计
+2. qa api 实现, digest api 重新设计实现
+3. contact us view 设置
+4. 404页面添加
+5. 个人主页设计， Userinfo
+6. bottle server
+7. 调试demo api, 看看内存占用量
+8. 毕业论文
 
 ## Bug:
 1. 程序异常崩溃,如panic会导致JVM崩溃，无法重新启动Tika，导致程序无法正常启动。
