@@ -13,6 +13,7 @@ func registeAjaxApi(router *mux.Router) {
 	router.HandleFunc("/login", login).Methods("GET")
 	router.HandleFunc("/logout", logout).Methods("GET")
 	registeSummaryApi(router.PathPrefix("/digest").Subrouter())
+	registeQuestionApi(router.PathPrefix("/qa").Subrouter())
 }
 
 // API's required login decorator.

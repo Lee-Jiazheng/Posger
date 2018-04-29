@@ -45,6 +45,31 @@ func DeletePaper(filter map[string]interface{}) {
 	}
 }
 
+func AddQuestion(question Question) {
+	//paper.PaperId = bson.NewObjectId()
+	if len(SelectUser(map[string]interface{}{"questionid": question.QuestionId})) == 0 {
+		Logger.Fatalln("the question has existed in database, ", question)
+		return
+	}
+	if err := GetDatabaseConncect(DATABASE).AddQuestion(question); err != nil {
+		Logger.Fatalf("Add question failed, %s, %s\n", question, err)
+	}
+}
+
+func SelectQuestion(filter map[string]interface{}) []Question{
+	return GetDatabaseConncect(DATABASE).SelectQuestion(filter)
+}
+
+func SetQuestionAnswer(question Question) {
+	if len(SelectQuestion(map[string]interface{}{"questionid": question.QuestionId})) == 0 {
+		Logger.Fatalln("the question didn't exist, " + question.QuestionId)
+		return
+	}
+	if err := GetDatabaseConncect(DATABASE).SetQuestionAnswer(question); err != nil {
+		Logger.Fatalln("Update question exception, ", question)
+	}
+
+}
 
 // TODO: It mantains definitive database connection session.
 type ConnPool interface {

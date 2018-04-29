@@ -24,12 +24,15 @@ func init() {
 
 func RunServer() {
 	router := mux.NewRouter()
-	router.HandleFunc("/index", indexHandler)
+	router.HandleFunc("/index", indexView).Methods("GET")
 	router.Handle("/", http.RedirectHandler("/index", 301))
+	router.HandleFunc("/digest", digestView).Methods("GET")
+	router.HandleFunc("/q-a", questionView).Methods("GET")
+	router.HandleFunc("/userinfo", infoView).Methods("GET")
 
 	//train_router := router.PathPrefix("/train").Subrouter()
 	
-	summary_router := router.PathPrefix("/digest").Subrouter()
+	summary_router := router.PathPrefix("/digests").Subrouter()
 	summary_router.HandleFunc("/upload", uploadView).Methods("GET")
 	summary_router.HandleFunc("/upload", uploadPaper).Methods("POST")
 	summary_router.HandleFunc("/poster/{paperId}", summarizePaper).Methods("GET")
@@ -50,7 +53,8 @@ func RunServer() {
 	Logger.Fatalln(srv.ListenAndServe())
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+// return index web page
+func indexView(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/index.html")
 	var username, _ = r.Cookie("user")
 	if username == nil {
@@ -63,6 +67,23 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 			t.Execute(w, nil)
 		}
 	}
+}
+
+// return digest web page, methods: get
+func digestView(w http.ResponseWriter, r *http.Request) {
+	;
+}
+
+// return qustion-answering web page, methods: get
+func questionView(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("static/views/index.html")
+	t.Execute(w, nil)
+}
+
+// If user has already logged in, it will show its personal page.
+// Otherwise, it will redirect to the index page.
+func infoView(writer http.ResponseWriter, request *http.Request) {
+
 }
 
 // Check login function.
