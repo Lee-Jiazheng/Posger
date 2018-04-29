@@ -29,6 +29,7 @@ func RunServer() {
 	router.HandleFunc("/digest", digestView).Methods("GET")
 	router.HandleFunc("/q-a", questionView).Methods("GET")
 	router.HandleFunc("/userinfo", infoView).Methods("GET")
+	router.HandleFunc("/contact", contactView).Methods("GET")
 
 	//train_router := router.PathPrefix("/train").Subrouter()
 	
@@ -76,14 +77,21 @@ func digestView(w http.ResponseWriter, r *http.Request) {
 
 // return qustion-answering web page, methods: get
 func questionView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/index.html")
+	t, _ := template.ParseFiles("static/views/answer.html")
 	t.Execute(w, nil)
 }
 
 // If user has already logged in, it will show its personal page.
 // Otherwise, it will redirect to the index page.
-func infoView(writer http.ResponseWriter, request *http.Request) {
+func infoView(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("static/views/user.html")
+	t.Execute(w, nil)
+}
 
+// Contact web page, introduce the developer.
+func contactView(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("static/views/contactus.html")
+	t.Execute(w, nil)
 }
 
 // Check login function.
