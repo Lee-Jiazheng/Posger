@@ -37,7 +37,7 @@
                         <a class="nav-link" href="/digest" data-toggle="modal" data-target="#digestModal"><span class="fa fa-scissors mr-1"></span>Digest</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/question"><span class="fa fa-question mr-1"></span>QATest</a>
+                        <a class="nav-link" href="/q-a"><span class="fa fa-question mr-1"></span>QATest</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/contact"><span class="fa fa-wechat mr-1"><span class="info"></span>Contact</a>
@@ -52,7 +52,7 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                           <div class="dropdown-menu">
-                              <a class="dropdown-item" href="#"><span>Settings</span><img class="rounded-circle" style="width: 25px; height: 25px; float: right;" src="{{.Avatar}}" alt="头像"/></a>
+                              <a class="dropdown-item" href="/userinfo/{{.UserId}}"><span>Settings</span><img class="rounded-circle" style="width: 25px; height: 25px; float: right;" src="{{.Avatar}}" alt="头像"/></a>
                               <div class="dropdown-divider"></div>
                               <a class="dropdown-item btn btn-danger" href="/api/logout">Sign out</a>
                           </div>

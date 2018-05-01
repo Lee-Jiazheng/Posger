@@ -24,8 +24,8 @@ func init() {
 
 func RunServer() {
 	router := mux.NewRouter()
+	// Basic View Config
 	router.HandleFunc("/index", indexView).Methods("GET")
-	router.Handle("/", http.RedirectHandler("/index", 301))
 	router.HandleFunc("/digest", digestView).Methods("GET")
 	router.HandleFunc("/q-a", questionView).Methods("GET")
 	router.HandleFunc("/userinfo", infoView).Methods("GET")
@@ -43,6 +43,15 @@ func RunServer() {
 	registeAjaxApi(router.PathPrefix("/api").Subrouter())
 
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// Exception View Config
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/index", http.StatusFound)
+	})
+	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		Logger.Println("Resource Not Found: ", r.URL.Path)
+		t, _ := template.ParseFiles("static/views/404.html")
+		t.Execute(w, nil)})
 
 	srv := &http.Server{
 		Handler:      router,
