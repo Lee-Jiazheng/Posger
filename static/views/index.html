@@ -1,8 +1,8 @@
-{{template "header" .}}     {{/* 把变量传入header模板中 */}}
+{{template "header"}}     {{/* 把变量传入header模板中 */}}
 <title>Index Page</title>
 
 <body>
-    {{template "navigator"}}
+    {{template "navigator" .}}
 
     <header class="jumbotron">
         <div class="container">

@@ -51,7 +51,8 @@ func RunServer() {
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		Logger.Println("Resource Not Found: ", r.URL.Path)
 		t, _ := template.ParseFiles("static/views/404.html", "static/views/ref.html")
-		t.Execute(w, nil)})
+		t.Execute(w, checkLoginUser(r, "404"))
+	})
 
 	srv := &http.Server{
 		Handler:      router,
@@ -66,45 +67,48 @@ func RunServer() {
 // return index web page
 func indexView(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/index.html", "static/views/ref.html")
-	var username, _ = r.Cookie("user")
-	if username == nil {
-		t.Execute(w, nil)
-	} else {
-		users := SelectUser(map[string]interface{}{"username": username.Value})
-		if len(users) == 1 {
-			t.Execute(w, users[0])
-		} else {
-			t.Execute(w, nil)
-		}
-	}
+	u := checkLoginUser(r, "index")
+	t.Execute(w, u)
 }
 
 // return digest web page, methods: get
 func digestView(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/digest.html", "static/views/ref.html")
-	t.Execute(w, nil)
+	t.Execute(w, checkLoginUser(r, "digest"))
 }
 
 // return qustion-answering web page, methods: get
 func questionView(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("static/views/answer.html", "static/views/ref.html")
-	if err != nil {
-		log.Println(err)
-	}
-	t.Execute(w, nil)
+	t, _ := template.ParseFiles("static/views/answer.html", "static/views/ref.html")
+	t.Execute(w, checkLoginUser(r, "question"))
 }
 
 // If user has already logged in, it will show its personal page.
 // Otherwise, it will redirect to the index page.
 func infoView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/user.html")
-	t.Execute(w, nil)
+	t, _ := template.ParseFiles("static/views/user.html", "static/views/ref.html")
+	t.Execute(w, checkLoginUser(r, "info"))
 }
 
 // Contact web page, introduce the developer.
 func contactView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/contactus.html")
-	t.Execute(w, nil)
+	t, _ := template.ParseFiles("static/views/contactus.html", "static/views/ref.html")
+	t.Execute(w, checkLoginUser(r, "contact"))
+}
+
+// Check whether Login
+// If login, return user else nil
+// pageType is used to navigator activated.
+func checkLoginUser(r *http.Request, pageType string) interface{} {
+	type tempInfo struct {
+		User *User
+		PageType string
+	}
+	if username, _ := r.Cookie("user"); username != nil {
+		return tempInfo{&SelectUser(map[string]interface{}{"username": username.Value})[0], pageType}
+	} else {
+		return tempInfo{nil, pageType}
+	}
 }
 
 // Check login function.
