@@ -16,7 +16,6 @@ func TestSelectMongodb(t *testing.T) {
 		t.Error(user)
 	}
 	// TODO: Select User to verify we really insert users successfully.
-
 }
 
 func TestInsertPaper(t *testing.T) {

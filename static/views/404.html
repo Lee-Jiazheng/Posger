@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-    <meta name="keywords" content="" />
-    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-    <!-- font files -->
-    <link href="http://fonts.googleapis.com/css?family=Wallpoet" rel="stylesheet">
-    <link href="http://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
-    <!-- /font files -->
-    <!-- css files -->
-    <link href="/static/css/404style.css" rel="stylesheet" type="text/css" media="all" />
-    <!-- /css files -->
+{{template "header"}}
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- font files -->
+<link href="http://fonts.googleapis.com/css?family=Wallpoet" rel="stylesheet">
+<link href="http://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
+<!-- /font files -->
+<!-- css files -->
+<link href="/static/css/404style.css" rel="stylesheet" type="text/css" media="all" />
+<!-- /css files -->
 
-    <title>404 Page</title>
-</head>
+<title>404 Page</title>
 
 <body>
+    {{template "navigator"}}
 
 <div class="w3layouts-bg">
     <div class="agileits-content">
@@ -34,6 +29,8 @@
     </div>
     <div class="clearfix"></div>
 </div>
+
+    {{template "footer"}}
 
 </body>
 </html>

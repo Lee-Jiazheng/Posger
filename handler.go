@@ -50,7 +50,7 @@ func RunServer() {
 	})
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		Logger.Println("Resource Not Found: ", r.URL.Path)
-		t, _ := template.ParseFiles("static/views/404.html")
+		t, _ := template.ParseFiles("static/views/404.html", "static/views/ref.html")
 		t.Execute(w, nil)})
 
 	srv := &http.Server{
@@ -65,7 +65,7 @@ func RunServer() {
 
 // return index web page
 func indexView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/index.html")
+	t, _ := template.ParseFiles("static/views/index.html", "static/views/ref.html")
 	var username, _ = r.Cookie("user")
 	if username == nil {
 		t.Execute(w, nil)
@@ -81,12 +81,16 @@ func indexView(w http.ResponseWriter, r *http.Request) {
 
 // return digest web page, methods: get
 func digestView(w http.ResponseWriter, r *http.Request) {
-	;
+	t, _ := template.ParseFiles("static/views/digest.html", "static/views/ref.html")
+	t.Execute(w, nil)
 }
 
 // return qustion-answering web page, methods: get
 func questionView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/answer.html")
+	t, err := template.ParseFiles("static/views/answer.html", "static/views/ref.html")
+	if err != nil {
+		log.Println(err)
+	}
 	t.Execute(w, nil)
 }
 
@@ -135,7 +139,7 @@ func uploadPaper(w http.ResponseWriter, r *http.Request) {
 func summarizePaper(w http.ResponseWriter, r *http.Request) {
 	//vars := mux.Vars(r)
 	//vars["paperId"]
-	t, _ := template.ParseFiles("static/views/sum_template.html")
+	t, _ := template.ParseFiles("static/views/digest.html")
 	t.Execute(w, nil)
 }
 

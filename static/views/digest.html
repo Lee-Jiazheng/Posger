@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-        <link href="/static/css/bootstrap.css" rel="stylesheet">
-        <link href="/static/css/styles.css" rel="stylesheet">
-        <link href="/static/css/bootstrap-social.css" rel="stylesheet">
-        <link href="/static/css/font-awesome.css" rel="stylesheet">
-        <link href="/static/css/jqcloud.css" rel="stylesheet">
-        
-        <title>Index Page</title>
-    </head>
+{{template "header"}}
+<link href="/static/css/jqcloud.css" rel="stylesheet">
+<title>Summary</title>
 
     <body>
+        {{template "navigator"}}
         <!-- nav bar -->
         <header class="jumbotron">
             <div class="row justify-content-center align-items-center" class="text-align: center">
@@ -67,11 +58,9 @@
                 </div>
             </div>
         </div>
-    </body>
 
-    <script src="/static/js/jquery-3.2.1.min.js"></script>
-    <script src="/static/js/tether.min.js"></script>    
-    <script src="/static/js/bootstrap.min.js"></script>
+    {{template "footer"}}
+    </body>
     <script src="/static/js/jqcloud-1.0.4.js"></script>
 
     <script>
@@ -80,7 +69,7 @@
         });
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
         var word_array = []
-        $(function() {
+        //$(function() {
             $.get("../info/1", function(data, status) {
                 data = JSON.parse(data)
                 //TODO: Keywords's weight
