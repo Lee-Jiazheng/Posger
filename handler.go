@@ -19,7 +19,7 @@ var (
 )
 
 func init() {
-	hostAddress = "127.0.0.1:8080"
+	hostAddress = "0.0.0.0:8080"
 }
 
 func RunServer() {
