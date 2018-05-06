@@ -4,7 +4,7 @@
 <body>
     {{template "navigator" .}}
 
-    <header class="jumbotron">
+    <header class="jumbotron" style="margin-bottom: 0px; background-color: #f05656;">
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -41,6 +41,41 @@
         </div>
     </header>
 
+    <script src="/static/js/sticker.min.js"></script>
+    <style>
+        .sticker {
+            margin: 30px 30px 0 30px;
+        }
+        .sticker-heroes {
+            width: 180px;
+            height: 180px;
+            float: left;
+        }
+
+        .sticker-batman .sticker-img {
+            background-image: url(/static/img/heroes-batman.png);
+        }
+        .sticker-ironman .sticker-img {
+            background-image: url(/static/img/heroes-ironman.png);
+        }
+        .sticker-greenman .sticker-img {
+            background-image: url(/static/img/heroes-green.png);
+        }
+    </style>
+
+    <section style="background-color: #465b74; padding: 80px 0; text-align: center;">
+        <h3 style="font-size: 80px;">Heroes</h3>
+        <p>haha</p>
+        <ul style="position: relative; list-style: none; display: block; height: 210px; width: 720px; margin: 10px auto 0px auto; padding: 0;">
+            <li class="sticker sticker-heroes sticker-batman"></li>
+            <li class="sticker sticker-heroes sticker-ironman"></li>
+            <li class="sticker sticker-heroes sticker-greenman"></li>
+        </ul>
+    </section>
+
+    <script>
+        Sticker.init('.sticker')
+    </script>
 
     {{template "footer"}}
 </body>

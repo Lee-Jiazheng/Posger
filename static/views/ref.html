@@ -11,6 +11,7 @@
         <link href="/static/css/fileinput.css" rel="stylesheet">
         <link href="/static/themes/explorer-fa/theme.css" rel="stylesheet">
         <link href="/static/css/agency.min.css" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Roboto:100,400" rel="stylesheet" type="text/css">
     </head>
 {{end}}
 
@@ -148,17 +149,18 @@
 {{end}}
 
 {{define "footer"}}
-    <footer>
+    <footer class="footer">
         <div class="container">
+            <h3>Contact</h3>
             <div class="row justify-content-center">
                 <div class="col-12 col-md-4">
-                    <a>asdf</a>
+                    <p>Github: </p>
                 </div>
                 <div class="col-12 col-md-4">
-                    <a>asdf</a>
+                    <p>CSDN: </p>
                 </div>
                 <div class="col-12 col-md-4">
-                    <a>asdf</a>
+                    <p>E-mail: </p>
                 </div>
             </div>
             <div class="row">
@@ -291,8 +293,6 @@
                 delete file_datas[id]
                 debugger
             });
-
-
         });
     </script>
 {{end}}

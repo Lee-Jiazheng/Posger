@@ -32,4 +32,27 @@ body {
 }
 
 .bg {
-    background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523283800868&di=ef0cc794beb334d3ed65fe1213967dc7&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F0b7b02087bf40ad1cd0f99c55d2c11dfa9ecce29.jpg")}
+    background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523283800868&di=ef0cc794beb334d3ed65fe1213967dc7&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F0b7b02087bf40ad1cd0f99c55d2c11dfa9ecce29.jpg")
+}
+
+.footer {
+    width: 100%;
+    padding: 80px 0;
+    text-align: center;
+    background-color: #333; 
+    color: white;
+}
+
+.footer h3 {
+    display: block;
+    position: relative;
+    font-size: 80px;
+    font-weight: 100;
+    line-height: 90px;
+}
+
+.footer > p {
+    font-size: 16px;
+    font-weight: 100;
+    line-height: 20px;
+}
