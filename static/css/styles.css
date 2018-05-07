@@ -43,6 +43,15 @@ body {
     color: white;
 }
 
+body {
+    font-family: Roboto;
+}
+
+h3 {
+    font-weight: 100;
+    text-transform: none;
+}
+
 .footer h3 {
     display: block;
     position: relative;

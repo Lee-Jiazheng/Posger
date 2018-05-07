@@ -8,10 +8,10 @@
     {{template "navigator" .}}
     <header class="jumbotron bg">
         <div class="container" style="padding: 100px; color: white;">
-            <h1>Welcome to Lee's Q-A System...</h1>
+            <h1 style="text-transform: none; font-family: Roboto;">Welcome to Lee's Q-A System...</h1>
             <h4>知无不言，言无不尽，百人誉之不加密，百人毁之不加疏。</h4>
-            <form class="input-group" style="width:  50%">
-                <input type="text" placeholder="Please Input Your Question..." class="form-control">
+            <form class="input-group" style="padding: 20px 30px; margin-top: 100px;" id="question-form">
+                <input type="text" placeholder="Please Input Your Question..." class="form-control" name="question">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary">I've Done</button>
                 </span>
@@ -21,6 +21,47 @@
 
     {{template "footer"}}
 </body>
+
+<script>
+    $(document).ready(function () {
+        $('#question-form').submit(function(event) {
+            event.preventDefault();
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(msg) {
+                    console.log(msg)
+                }
+            })
+        });
+
+
+        $("#login-form").submit(function (event) {
+            event.preventDefault()
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (msg) {
+                    if (JSON.parse(msg).error) {
+                        $("#login-body").prepend('<div class="alert alert-dismissible alert-danger fade show" role="alert">\n' +
+                                '           <span id="login-alert-content">' + JSON.parse(msg).error + '</span>\n' +
+                                '               <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                                '                   <span aria-hidden="true">&times;</span>\n' +
+                                '               </button>\n' +
+                                '      </div>')
+                    } else {
+                        // login successfully, refresh the page
+                        location.reload()
+                    }
+                },
+            })
+        })
+    })
+</script>
 
 <script src="/static/js/jqcloud-1.0.4.js"></script>
 
