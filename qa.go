@@ -9,7 +9,6 @@ import (
 	"io"
 	"bytes"
 	"github.com/satori/go.uuid"
-	"io/ioutil"
 )
 
 const (
@@ -18,7 +17,8 @@ const (
 
 func registeQuestionApi(router *mux.Router) {
 	router.HandleFunc("/", processQuestion)
-	router.HandleFunc("/answer/{questionId}", getAnswer)
+	router.HandleFunc("/answer/{questionId}", getAnswer).Methods("GET")
+	router.HandleFunc("/answer/{questionId}", alterAnswer).Methods("POST")
 }
 
 // The client requests the server, providing a question parameter with question
@@ -36,21 +36,22 @@ func processQuestion(w http.ResponseWriter, r *http.Request) {
 			}{"Nice request!", questions[0].QuestionId})
 			io.Copy(w, bytes.NewReader(d))
 		} else {
+			questionId := uuid.Must(uuid.NewV4()).String()
 			// request the bottle server with question and questionId
-			go AddQuestion(Question{uuid.Must(uuid.NewV4()).String(), q[0], "", nil})
+			go AddQuestion(Question{questionId, q[0], "", nil})
 			// return message, if server response successfully, waiting for answer
 			// return error, if server
 			resp, err := http.Get(_ANSWERING_SERVER + q[0])
 			if err != nil {
 				Logger.Fatalln("Request question server error")
 				d, _ := json.Marshal(struct {
-					Msg string			`json:"msg"`
+					Msg string			`json:"error"`
 					QuestionId	string	`json:"question_id"`
-				}{"Nice request!", questions[0].QuestionId})
+				}{"Answering server error...", questionId})
 				io.Copy(w, bytes.NewReader(d))
 			}
 			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
+			//body, err := ioutil.ReadAll(resp.Body)
 
 		}
 
@@ -74,6 +75,21 @@ func getAnswer(w http.ResponseWriter, r *http.Request) {
 		} else {
 			// return the proceeded question / answer message
 		}
+	}
+}
+
+// Add answer and passages by questionId, request by ZeusKnows Server
+// POST
+func alterAnswer(w http.ResponseWriter, r *http.Request) {
+	questionId := mux.Vars(r)["questionId"]
+	// answer and passage is saved in body by json format.
+	if qs := SelectQuestion(map[string]interface{}{"questionid": questionId}); len(qs) == 0{
+		// return questionId is wrong message
+		io.Copy(w, bytes.NewReader([]byte(`{"error": "question_id didn't exist!"}`)))
+	} else {
+		question := qs[0]
+		go SetQuestionAnswer(Question{question.QuestionId, question.Question, answer, passages})
+		io.Copy(w, bytes.NewReader([]byte(`{"msg": "ok"}"`)))
 	}
 }
 
