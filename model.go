@@ -19,14 +19,14 @@ type Databaser interface {
 
 func GetDatabaseConncect(db string) (Databaser) {
 	if db == "mongodb" { return newMongodb()}
-	Logger.Fatalln("database is not the validate database backend.")
+	Logger.Println("database is not the validate database backend.")
 	return nil
 }
 
 func getMongodbSession() (*mgo.Session){
 	session, err := mgo.Dial(MONGO_DB_SEVER)
 	if err != nil {
-		Logger.Fatalln(err)
+		Logger.Println(err)
 	}
 	session.SetSafe(&mgo.Safe{})
 	return session
@@ -159,7 +159,7 @@ func (self MongodbPaper) SelectPaper(filter map[string]interface{}) ([]Paper) {
 	res := []Paper{}
 	err := c.Find(&filter).All(&res)
 	if err != nil {
-		Logger.Fatalf("Find Paper Error, %s\n", err)
+		Logger.Println("Find Paper Error, %s\n", err)
 	}
 	return res
 }
@@ -170,7 +170,7 @@ func (self MongodbPaper) DeletePaper(filter map[string]interface{}) {
 	c := session.DB(self.database).C(self.collection)
 	err := c.Remove(filter)
 	if err != nil {
-		Logger.Fatalf("Find Paper Error, %s\n", err)
+		Logger.Println("Find Paper Error, %s\n", err)
 	}
 }
 
@@ -213,7 +213,7 @@ func (self MongodbQuestion) SelectQuestion(filter map[string]interface{}) ([]Que
 	c := sess.DB(self.database).C(self.collection)
 	res := []Question{}
 	if err := c.Find(&filter).All(&res); err != nil {
-		Logger.Fatalf("Find Question Error, %s, the condition is %s\n", err, filter)
+		Logger.Println("Find Question Error, %s, the condition is %s\n", err, filter)
 	}
 	return res
 }

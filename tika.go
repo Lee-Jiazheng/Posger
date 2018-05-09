@@ -25,7 +25,7 @@ func init2() {
 		cmd.Stdout = &out
 		err := cmd.Run()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		fmt.Printf("%s", out.String())
 	}()

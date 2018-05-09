@@ -9,14 +9,16 @@ import (
 	"io"
 	"bytes"
 	"github.com/satori/go.uuid"
+	"io/ioutil"
+	"fmt"
 )
 
 const (
-	_ANSWERING_SERVER = "0.0.0.0:8081/answer?question="
+	_ANSWERING_SERVER = "http://0.0.0.0:8081/answer?question=%s&question_id=%s"
 )
 
 func registeQuestionApi(router *mux.Router) {
-	router.HandleFunc("/", processQuestion)
+	router.HandleFunc("/answer", processQuestion).Methods("GET")
 	router.HandleFunc("/answer/{questionId}", getAnswer).Methods("GET")
 	router.HandleFunc("/answer/{questionId}", alterAnswer).Methods("POST")
 }
@@ -27,33 +29,33 @@ func processQuestion(w http.ResponseWriter, r *http.Request) {
 	if q := r.URL.Query()["question"]; len(q) == 0 {
 		// return error msg: question parameter is required
 	} else {
+		questionId := ""
 		// TODO: if the question content has proceeded before, we can directly return the cache answer in database
-		questions := SelectQuestion(map[string]interface{}{"Question": q})
-		if len(questions) == 1 {
-			d, _ := json.Marshal(struct {
-				Msg string			`json:"msg"`
-				QuestionId	string	`json:"question_id"`
-			}{"Nice request!", questions[0].QuestionId})
-			io.Copy(w, bytes.NewReader(d))
-		} else {
-			questionId := uuid.Must(uuid.NewV4()).String()
+		questions := SelectQuestion(map[string]interface{}{"question": q[0]})
+		if len(questions) == 0 {
+			questionId = uuid.Must(uuid.NewV4()).String()
 			// request the bottle server with question and questionId
+			_, err := http.Get(fmt.Sprintf(_ANSWERING_SERVER, q[0], questionId))
+			if err != nil {
+				Logger.Println("Request question server error")
+				d, _ := json.Marshal(struct {
+					Msg string			`json:"error"`
+					QuestionId	string  `json:"question_id"`
+				}{"Answering server error...", questionId})
+				io.Copy(w, bytes.NewReader(d))
+				return
+			}
 			go AddQuestion(Question{questionId, q[0], "", nil})
 			// return message, if server response successfully, waiting for answer
 			// return error, if server
-			resp, err := http.Get(_ANSWERING_SERVER + q[0])
-			if err != nil {
-				Logger.Fatalln("Request question server error")
-				d, _ := json.Marshal(struct {
-					Msg string			`json:"error"`
-					QuestionId	string	`json:"question_id"`
-				}{"Answering server error...", questionId})
-				io.Copy(w, bytes.NewReader(d))
-			}
-			defer resp.Body.Close()
-			//body, err := ioutil.ReadAll(resp.Body)
-
+		} else {
+			questionId = questions[0].QuestionId
 		}
+		d, _ := json.Marshal(struct {
+			Msg string			`json:"msg"`
+			QuestionId	string	`json:"question_id"`
+		}{"Nice request!", questionId})
+		io.Copy(w, bytes.NewReader(d))
 
 		//question := q[0]
 		// record question Id, return successful and allocated questionId, processing message.
@@ -72,8 +74,18 @@ func getAnswer(w http.ResponseWriter, r *http.Request) {
 		question := qs[0]
 		if question.Answer == "" {
 			// the answer still is proceeding
+			d, _ := json.Marshal(struct {
+				Msg string		`json:"msg"`
+				Answer	string	`json:"answer"`
+			}{"Answer Proceeding!", question.Answer})
+			io.Copy(w, bytes.NewReader(d))
 		} else {
 			// return the proceeded question / answer message
+			d, _ := json.Marshal(struct {
+				Msg string		`json:"msg"`
+				Answer	string	`json:"answer"`
+			}{"Answer Completed!", question.Answer})
+			io.Copy(w, bytes.NewReader(d))
 		}
 	}
 }
@@ -82,13 +94,19 @@ func getAnswer(w http.ResponseWriter, r *http.Request) {
 // POST
 func alterAnswer(w http.ResponseWriter, r *http.Request) {
 	questionId := mux.Vars(r)["questionId"]
+	body, _ := ioutil.ReadAll(r.Body)
+	info := &struct{
+		Answer		string		`json:"answer"`
+		Passages	[]string	`json:"passages"`
+	}{}
+	json.Unmarshal(body, &info)
 	// answer and passage is saved in body by json format.
 	if qs := SelectQuestion(map[string]interface{}{"questionid": questionId}); len(qs) == 0{
 		// return questionId is wrong message
 		io.Copy(w, bytes.NewReader([]byte(`{"error": "question_id didn't exist!"}`)))
 	} else {
 		question := qs[0]
-		go SetQuestionAnswer(Question{question.QuestionId, question.Question, answer, passages})
+		go SetQuestionAnswer(Question{question.QuestionId, question.Question, info.Answer, info.Passages})
 		io.Copy(w, bytes.NewReader([]byte(`{"msg": "ok"}"`)))
 	}
 }

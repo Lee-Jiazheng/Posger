@@ -20,7 +20,7 @@ var (
 func init() {
 	file, err := os.Create(LOG_PATH)
 	if err != nil {
-		log.Fatalln("Failed to create " + LOG_PATH + " file.")
+		log.Println("Failed to create " + LOG_PATH + " file.")
 	}
 	Logger = log.New(file, "", log.LstdFlags|log.Llongfile)
 	log.Println("Logger is starting")

@@ -12,7 +12,7 @@ func AddUser(user User) {
 		return
 	}
 	if err := GetDatabaseConncect(DATABASE).AddUser(user); err != nil {
-		Logger.Fatalf("Add user failed, %s\n", user.Username)
+		Logger.Println("Add user failed, %s\n", user.Username)
 	}
 }
 
@@ -24,11 +24,11 @@ func SelectUser(filter map[string]interface{}) []User {
 func AddPaper(paper Paper) {
 	//paper.PaperId = bson.NewObjectId()
 	if len(SelectUser(map[string]interface{}{"username": paper.Owner})) == 0 {
-		Logger.Fatalln("the username didn't exist, " + paper.Owner)
+		Logger.Println("the username didn't exist, " + paper.Owner)
 		return
 	}
 	if err := GetDatabaseConncect(DATABASE).AddPaper(paper); err != nil {
-		Logger.Fatalf("Add paper failed, %s, %s\n", paper, err)
+		Logger.Println("Add paper failed, %s, %s\n", paper, err)
 	}
 }
 
@@ -38,7 +38,7 @@ func SelectPaper(filter map[string]interface{}) []Paper{
 
 func DeletePaper(filter map[string]interface{}) {
 	if len(SelectPaper(filter)) == 0 {
-		Logger.Fatalln("the paper filter condition found none paper, ", filter)
+		Logger.Println("the paper filter condition found none paper, ", filter)
 		return
 	} else {
 		GetDatabaseConncect(DATABASE).DeletePaper(filter)
@@ -47,12 +47,12 @@ func DeletePaper(filter map[string]interface{}) {
 
 func AddQuestion(question Question) {
 	//paper.PaperId = bson.NewObjectId()
-	if len(SelectUser(map[string]interface{}{"questionid": question.QuestionId})) == 0 {
-		Logger.Fatalln("the question has existed in database, ", question)
+	if len(SelectQuestion(map[string]interface{}{"question": question.Question})) != 0 {
+		Logger.Println("the question has existed in database, ", question)
 		return
 	}
 	if err := GetDatabaseConncect(DATABASE).AddQuestion(question); err != nil {
-		Logger.Fatalf("Add question failed, %s, %s\n", question, err)
+		Logger.Println("Add question failed, %s, %s\n", question, err)
 	}
 }
 
@@ -62,11 +62,11 @@ func SelectQuestion(filter map[string]interface{}) []Question{
 
 func SetQuestionAnswer(question Question) {
 	if len(SelectQuestion(map[string]interface{}{"questionid": question.QuestionId})) == 0 {
-		Logger.Fatalln("the question didn't exist, " + question.QuestionId)
+		Logger.Println("the question didn't exist, " + question.QuestionId)
 		return
 	}
 	if err := GetDatabaseConncect(DATABASE).SetQuestionAnswer(question); err != nil {
-		Logger.Fatalln("Update question exception, ", question)
+		Logger.Println("Update question exception, ", question)
 	}
 
 }

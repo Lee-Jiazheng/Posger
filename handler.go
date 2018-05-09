@@ -23,6 +23,7 @@ func init() {
 }
 
 func RunServer() {
+
 	router := mux.NewRouter()
 	// Basic View Config
 	router.HandleFunc("/index", indexView).Methods("GET")
@@ -61,7 +62,7 @@ func RunServer() {
 		ReadTimeout:  15 * time.Second,
 	}
 	log.Println("Server listened at " + "http://" + hostAddress)
-	Logger.Fatalln(srv.ListenAndServe())
+	Logger.Println(srv.ListenAndServe())
 }
 
 // return index web page

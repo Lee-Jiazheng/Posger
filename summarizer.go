@@ -76,7 +76,7 @@ func uploadPaperApi(w http.ResponseWriter, r *http.Request) {
 	path := "static/articles/" + id
 	new_f, err := os.Create(path)
 	if err != nil {
-		Logger.Fatalln("Create File failed, path is ", path)
+		Logger.Println("Create File failed, path is ", path)
 	}
 	defer new_f.Close()
 	io.Copy(new_f, up_file)			// copy content to the new fiel
