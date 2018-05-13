@@ -11,10 +11,11 @@ import (
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"fmt"
+	"net/url"
 )
 
 const (
-	_ANSWERING_SERVER = "http://0.0.0.0:8081/answer?question=%s&question_id=%s"
+	_ANSWERING_SERVER = "/answer?question=%s&question_id=%s"
 )
 
 func registeQuestionApi(router *mux.Router) {
@@ -35,7 +36,11 @@ func processQuestion(w http.ResponseWriter, r *http.Request) {
 		if len(questions) == 0 {
 			questionId = uuid.Must(uuid.NewV4()).String()
 			// request the bottle server with question and questionId
-			_, err := http.Get(fmt.Sprintf(_ANSWERING_SERVER, q[0], questionId))
+			form := url.Values{}
+			form.Add("question", q[0])
+			form.Add("question_id", questionId)
+			fmt.Println(fmt.Sprintf(_ANSWERING_SERVER, q[0], questionId))
+			_, err := http.Get("http://0.0.0.0:8081/answer?" + form.Encode())
 			if err != nil {
 				Logger.Println("Request question server error")
 				d, _ := json.Marshal(struct {
@@ -108,6 +113,7 @@ func alterAnswer(w http.ResponseWriter, r *http.Request) {
 		question := qs[0]
 		go SetQuestionAnswer(Question{question.QuestionId, question.Question, info.Answer, info.Passages})
 		io.Copy(w, bytes.NewReader([]byte(`{"msg": "ok"}"`)))
+		Logger.Println(question.Question, ": ,", info.Answer)
 	}
 }
 
