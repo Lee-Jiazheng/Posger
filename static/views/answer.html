@@ -9,7 +9,7 @@
     <header class="jumbotron bg">
         <div class="container" style="padding: 100px; color: white;">
             <h1 style="text-transform: none; font-family: Roboto;">Welcome to Lee's Q-A System...</h1>
-            <h4>知无不言，言无不尽，百人誉之不加密，百人毁之不加疏。<button id="refresh">刷新</button></h4>
+            <h4>知无不言，言无不尽，百人誉之不加密，百人毁之不加疏。</h4>
             <form class="input-group" style="padding: 20px 30px; margin-top: 100px;" id="question-form" action="/api/qa/answer" method="get">
                 <input type="text" placeholder="Please Input Your Question..." class="form-control" name="question" id="question">
                 <span class="input-group-btn">
@@ -23,7 +23,6 @@
 </body>
 
 <script>
-    var question_id = 0;
     $(document).ready(function () {
         $('#question-form').submit(function(event) {
             event.preventDefault();
@@ -33,24 +32,37 @@
                 url: form.attr('action') + "?question=" + $("#question").val(),
                 data: form.serialize(),
                 success: function(msg) {
-                    console.log(msg)
-                    question_id = JSON.parse(msg).question_id;
-                }
-            })
-        });
-
-        $('#refresh').click(function() {
-            $.ajax({
-                type: "GET",
-                url: "/api/qa/answer/"+question_id,
-                success: function (msg) {
                     msg = JSON.parse(msg)
-                    if (msg.answer != "") {
-                        console.log(msg.answer)
+                    if (msg.error) {
+                        alert(msg.error)
+                        // Internal error
+                    } else {
+                        // request the answer api,
+                        var question_id = msg.question_id;
+                        while(true) {
+                            var req = 1;
+                            if (req) {
+                                req = 0;
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/api/qa/answer/"+question_id,
+                                    success: function (msg) {
+                                        req = 1;
+                                        msg = JSON.parse(msg)
+                                        if (msg.answer != "") {
+                                            console.log(msg.answer)
+                                            req = 2;
+                                        }
+                                    }
+                                })
+                                if (req == 2) break;
+                            }
+                        }
                     }
                 }
             })
         });
+
     })
 </script>
 

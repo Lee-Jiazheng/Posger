@@ -65,3 +65,12 @@ h3 {
     font-weight: 100;
     line-height: 20px;
 }
+
+/*css modal padding-right cancel*/
+body {
+    padding-right: 0px !important;
+}
+*.modal-open {
+    overflow-y: scroll;
+    padding-right: 0 !important;
+}

@@ -23,7 +23,6 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Navbar" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
             </div>
             <!--<a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Bootstrap"><svg class="d-block" width="36" height="36" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title><path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path><path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path></svg>
             </a>-->
@@ -48,18 +47,18 @@
                 <span class="navbar-text">
                 {{ if .User }}
                     <div class="btn-group">
-                                <button type="button" class="btn btn-info">{{.User.Username}}</button>
-                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                              <div class="dropdown-menu">
-                                  <a class="dropdown-item" href="/userinfo/{{.User.UserId}}"><span>Settings</span><img class="rounded-circle" style="width: 25px; height: 25px; float: right;" src="{{.User.Avatar}}" alt="头像"/></a>
-                                  <div class="dropdown-divider"></div>
-                                  <a class="dropdown-item btn btn-danger" href="/api/logout">Sign out</a>
-                              </div>
-                            </div>
+                        <button type="button" class="btn btn-info">{{.User.Username}}</button>
+                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="/userinfo/{{.User.UserId}}"><span>Settings</span><img class="rounded-circle" style="width: 25px; height: 25px; float: right;" src="{{.User.Avatar}}" alt="头像"/></a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item btn btn-danger" href="/api/logout">Sign out</a>
+                        </div>
+                    </div>
                 {{else }}
-                    <a data-toggle="modal" data-target="#loginModal">
+                    <a data-toggle="modal" data-target="#loginModal" id="login-toggler">
                         <span class="fa fa-sign-in mr-1"></span>Login
                     </a>
                 {{ end }}
@@ -73,19 +72,19 @@
             <div class="modal-content">
                 <form method="get" action="/api/login" id="login-form">
                     <div class="modal-header">
-                        <h4 class="modal-title">Login</h4>
+                        <h4 class="modal-title" style="color: #000;">Login</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
                     <div class="modal-body" id="login-body">
                         <div class="form-group row">
-                            <label for="firstname" class="col-md-3 col-form-label">First Name</label>
+                            <label for="firstname" class="col-md-3 col-form-label" style="color: #000;">First Name</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="username" name="username" placeholder="User Name">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="password" class="col-md-3 col-form-label">Password</label>
+                            <label for="password" class="col-md-3 col-form-label" style="color: #000;">Password</label>
                             <div class="col-md-9">
                                 <div class="input-group">
                                     <input class="form-control" id="password" name="password" type="password" placeholder="Password">
@@ -97,7 +96,7 @@
                             <div class="form-check col-md-6 offset-md-3">
                                 <label class="form-check-label">
                                     <input type="checkbox" class="form-check-input" name="approve" value="">
-                                    <strong>Remeber you?</strong>
+                                    <strong style="color: #000;">Remeber you?</strong>
                                 </label>
                             </div>
                         </div>
@@ -181,6 +180,7 @@
 
     <script>
         $(document).ready(function(){
+
             /**
              * Login Function,,, ajax-api, If login successfully, refresh the page.
              * If not, show the error msg.*/
