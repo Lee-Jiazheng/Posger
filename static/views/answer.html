@@ -27,6 +27,15 @@
 
     </header>
 
+    <div style="background-color: #465b74;">
+        <div class="container">
+            <div class="row" id="answer-area">
+            </div>
+        </div>
+
+
+    </div>
+
     {{template "footer"}}
 </body>
 
@@ -37,6 +46,19 @@
     }
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
+    function add_answer(question, answer, question_id) {
+        var answer_div = $("<div class=\"col-12 col-md-4 col-sm-6\" style=\"display: none;\" id=\"" + question_id + "\">\n" +
+                "                    <div style=\"width: 100%; padding: 20px; height: 100%;\">\n" +
+                "                        <div class=\"card card-block\" style=\"height: 100%;\">\n" +
+                "                            <h4 class=\"card-title\">" + question + "</h4>\n" +
+                "                            <p class=\"card-text\">" + answer + "</p>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                </div>")
+        $("#answer-area").append(answer_div)
+        answer_div.fadeIn("slow")
     }
 
     $(document).ready(function () {
@@ -71,10 +93,10 @@
                     url: "/api/qa/answer/"+question_id,
                     success: function (msg) {
                         msg = JSON.parse(msg)
-                        if (msg.answer != "") {
-                            console.log(msg.answer)
+                        if (msg.msg) {
                             count = 100;
                             ok = true
+                            add_answer(msg.question, msg.answer, question_id)
                         }
                     }
                 });
@@ -88,7 +110,6 @@
                 set_progress(100, "答案生成成功！")
             }
         };
-
     })
 </script>
 

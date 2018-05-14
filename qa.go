@@ -80,16 +80,18 @@ func getAnswer(w http.ResponseWriter, r *http.Request) {
 		if question.Answer == "" {
 			// the answer still is proceeding
 			d, _ := json.Marshal(struct {
-				Msg string		`json:"msg"`
+				Msg string		`json:"error"`
+				Question string	`json:"question"`
 				Answer	string	`json:"answer"`
-			}{"Answer Proceeding!", question.Answer})
+			}{"Answer Completed!", question.Question, question.Answer})
 			io.Copy(w, bytes.NewReader(d))
 		} else {
 			// return the proceeded question / answer message
 			d, _ := json.Marshal(struct {
 				Msg string		`json:"msg"`
+				Question string	`json:"question"`
 				Answer	string	`json:"answer"`
-			}{"Answer Completed!", question.Answer})
+			}{"Answer Completed!", question.Question, question.Answer})
 			io.Copy(w, bytes.NewReader(d))
 		}
 	}
