@@ -78,3 +78,7 @@ body {
 header {
     margin-bottom: 0px!important;
 }
+
+samp {
+    color: gray;
+}

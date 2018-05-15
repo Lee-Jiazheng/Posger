@@ -278,8 +278,11 @@
 
                 var form = data.form, files = data.files, extra = data.extra,
                         response = data.response, reader = data.reader;
-                debugger
-                console.log('File uploaded triggered');
+
+                $("#" + previewId + " .file-details-cell").click(function(){
+                    window.open("/api/digest/paper/" + previewId)
+                });
+                console.log('File uploaded trigged');
             }).on('filesuccessremove', function(event, id) {
                 console.log(file_datas)
                 $.ajax({
@@ -294,5 +297,6 @@
                 debugger
             });
         });
+
     </script>
 {{end}}

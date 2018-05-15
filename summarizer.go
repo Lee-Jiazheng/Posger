@@ -44,7 +44,7 @@ func init() {
 // PathPrefix is api/digest, uploading files api and so on.
 func registeSummaryApi(router *mux.Router) {
 	router.HandleFunc("/paper", getPaperApi).Methods("GET")
-	//router.HandleFunc("/paper/{paperId}", ).Methods("GET")
+	router.HandleFunc("/paper/{paperId}", layoutPaper).Methods("GET")
 	router.HandleFunc("/paper", uploadPaperApi).Methods("POST")
 	router.HandleFunc("/paper/{paperId}", delPaperApi).Methods("DELETE")
 }
@@ -60,6 +60,11 @@ func getPaper(username string) ([]byte){
 
 func getPaperApi(w http.ResponseWriter, r *http.Request) {
 	RequireLoginApi(w, r, getPaper, "")
+}
+
+// Layout pdf files, return a html paper
+func layoutPaper(writer http.ResponseWriter, r *http.Request) {
+
 }
 
 // Upload pdf files to the server
