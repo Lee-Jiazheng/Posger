@@ -34,6 +34,13 @@ func (self Error) Error() string {
 	return self.error
 }
 
+func Must(data interface{}, err error) interface{} {
+	if err != nil {
+		Logger.Println(err)
+	}
+	return data
+}
+
 // purifyContent puries a list of string, delete invisible characters.
 func purifyContent(contents ...string) (res []string){
 	for _, content := range contents {

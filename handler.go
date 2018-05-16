@@ -27,7 +27,7 @@ func RunServer() {
 	router := mux.NewRouter()
 	// Basic View Config
 	router.HandleFunc("/index", indexView).Methods("GET")
-	router.HandleFunc("/digest", digestView).Methods("GET")
+	router.HandleFunc("/digest/{paperId}", digestView).Methods("GET")
 	router.HandleFunc("/q-a", questionView).Methods("GET")
 	router.HandleFunc("/userinfo", infoView).Methods("GET")
 	router.HandleFunc("/contact", contactView).Methods("GET")

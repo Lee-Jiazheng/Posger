@@ -280,7 +280,7 @@
                         response = data.response, reader = data.reader;
 
                 $("#" + previewId + " .file-details-cell").click(function(){
-                    window.open("/api/digest/paper/" + previewId)
+                    window.open("/digest/" + file_datas[previewId].id)
                 });
                 console.log('File uploaded trigged');
             }).on('filesuccessremove', function(event, id) {

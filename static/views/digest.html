@@ -70,7 +70,7 @@
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
         var word_array = []
         //$(function() {
-            $.get("../info/1", function(data, status) {
+            $.get("/api/digest/paper/" + window.location.href.split("/").slice(-1), function(data, status) {
                 data = JSON.parse(data)
                 //TODO: Keywords's weight
                 $("#abstract").text(data.Abstract)
@@ -91,6 +91,5 @@
             $("#keywords").jQCloud(word_array)
 
 
-        });
     </script>
 </html>

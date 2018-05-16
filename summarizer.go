@@ -43,12 +43,13 @@ func init() {
 
 // PathPrefix is api/digest, uploading files api and so on.
 func registeSummaryApi(router *mux.Router) {
+	// get paper list by logined user
 	router.HandleFunc("/paper", getPaperApi).Methods("GET")
-	router.HandleFunc("/paper/{paperId}", layoutPaper).Methods("GET")
+	// get paper layout data by paperId
+	router.HandleFunc("/paper/{paperId}", layoutPaperApi).Methods("GET")
 	router.HandleFunc("/paper", uploadPaperApi).Methods("POST")
 	router.HandleFunc("/paper/{paperId}", delPaperApi).Methods("DELETE")
 }
-
 
 func getPaper(username string) ([]byte){
 	res, _ := json.Marshal(struct {
@@ -62,10 +63,27 @@ func getPaperApi(w http.ResponseWriter, r *http.Request) {
 	RequireLoginApi(w, r, getPaper, "")
 }
 
-// Layout pdf files, return a html paper
-func layoutPaper(writer http.ResponseWriter, r *http.Request) {
-
+// get Paper layout meta data Api
+func layoutPaperApi(w http.ResponseWriter, r *http.Request) {
+	paperId, error_msg := mux.Vars(r)["paperId"], ""
+	if ps := SelectPaper(map[string]interface{}{"paperid": paperId}); len(ps) != 0 {
+		article, err := NewJsonArticle("static/articles/大数据时代我国企业财务共享中心的优化.pdf")
+		if err != nil {
+			error_msg = "The files uploaded error, " + ps[0].Name
+		} else {
+			io.Copy(w, bytes.NewReader(Must(json.Marshal(article)).([]byte)))
+			return
+		}
+	} else {
+		error_msg = "Invalid question ID."
+	}
+	returnJson, _ := json.Marshal(struct {
+		Msg		string		`json:"error"`
+		ID		string		`json:"question_id"`
+	}{error_msg, paperId})
+	io.Copy(w, bytes.NewReader(returnJson))
 }
+
 
 // Upload pdf files to the server
 // Warning: If you have logged in the system, You can save the files, and save the relationships to the database
@@ -138,7 +156,6 @@ func NewArticle(filepath string) (*Article, error) {
 		return nil, err
 	}
 	article.setMeta(content)
-	fmt.Print(content)
 	article.segmentation(content)
 	return article, nil
 }
