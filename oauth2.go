@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"time"
+	"github.com/satori/go.uuid"
 )
 
 var (
@@ -54,7 +55,9 @@ func oauth2FactoryToken(w http.ResponseWriter, r *http.Request) {
 	// Get the access_token and put user information to mydatabase
 	infos := &githubUser{}
 	json.Unmarshal(body, &infos)
-	go AddUser(User{Source: incName, UserId: infos.ID, Username: infos.Login, Password: infos.Login, Avatar: infos.AvatarURL, InfoURL: infos.URL, Bio: infos.Bio})
+	if users := SelectUser(map[string]interface{}{"username": infos.Login, "source": incName}); len(users) == 0 {
+		go AddUser(User{Source: incName, UserId: uuid.Must(uuid.NewV4()).String(), Username: infos.Login, Password: infos.Login, Avatar: infos.AvatarURL, InfoURL: infos.URL, Bio: infos.Bio})
+	}
 
 	// Later, we will marsh a better user info cookie.
 	http.SetCookie(w, &http.Cookie{

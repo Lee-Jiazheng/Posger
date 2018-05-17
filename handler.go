@@ -29,7 +29,7 @@ func RunServer() {
 	router.HandleFunc("/index", indexView).Methods("GET")
 	router.HandleFunc("/digest/{paperId}", digestView).Methods("GET")
 	router.HandleFunc("/q-a", questionView).Methods("GET")
-	router.HandleFunc("/userinfo", infoView).Methods("GET")
+	router.HandleFunc("/userinfo/{userId}", infoView).Methods("GET")
 	router.HandleFunc("/contact", contactView).Methods("GET")
 
 	//train_router := router.PathPrefix("/train").Subrouter()
@@ -68,8 +68,7 @@ func RunServer() {
 // return index web page
 func indexView(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("static/views/index.html", "static/views/ref.html")
-	u := checkLoginUser(r, "index")
-	t.Execute(w, u)
+	t.Execute(w, checkLoginUser(r, "index"))
 }
 
 // return digest web page, methods: get
@@ -87,8 +86,22 @@ func questionView(w http.ResponseWriter, r *http.Request) {
 // If user has already logged in, it will show its personal page.
 // Otherwise, it will redirect to the index page.
 func infoView(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("static/views/user.html", "static/views/ref.html")
-	t.Execute(w, checkLoginUser(r, "info"))
+	if username := isLogin(r); username == "anonymous" {
+		http.Redirect(w, r, "/index", http.StatusFound)
+	} else {
+		t, _ := template.ParseFiles("static/views/user.html", "static/views/ref.html")
+		//checkUser := checkLoginUser(r, "info")
+
+		if users := SelectUser(map[string]interface{}{"username": username, "userid": mux.Vars(r)["userId"]}); len(users) != 0 {
+			t.Execute(w, struct {
+				User	*User
+				Papers	[]Paper
+				PageType	string
+			}{&users[0], SelectPaper(map[string]interface{}{"owner": mux.Vars(r)["userId"]}), "info"})
+		} else {
+			http.Redirect(w, r, "/index", http.StatusFound)
+		}
+	}
 }
 
 // Contact web page, introduce the developer.
@@ -106,7 +119,12 @@ func checkLoginUser(r *http.Request, pageType string) interface{} {
 		PageType string
 	}
 	if username, _ := r.Cookie("user"); username != nil {
-		return tempInfo{&SelectUser(map[string]interface{}{"username": username.Value})[0], pageType}
+		if users := SelectUser(map[string]interface{}{"username": username.Value}); len(users) == 0{
+			return tempInfo{nil, pageType}
+		} else {
+			return tempInfo{&users[0], pageType}
+		}
+
 	} else {
 		return tempInfo{nil, pageType}
 	}

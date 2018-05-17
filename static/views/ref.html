@@ -44,8 +44,9 @@
                     </li>
                 </ul>
 
-                <span class="navbar-text">
+                <span class="navbar-text" style="padding: 0px;">
                 {{ if .User }}
+                <span class="navbar-text" style="padding: 0px;">
                     <div class="btn-group">
                         <button type="button" class="btn btn-info">{{.User.Username}}</button>
                         <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -58,6 +59,7 @@
                         </div>
                     </div>
                 {{else }}
+                <span class="navbar-text" >
                     <a data-toggle="modal" data-target="#loginModal" id="login-toggler">
                         <span class="fa fa-sign-in mr-1"></span>Login
                     </a>
@@ -164,7 +166,7 @@
             </div>
             <div class="row">
                 <div class="container col-auto">
-                    @2018 Designed by LeeJiazheng2
+                    @2018 Designed by Lee_Jiazheng
                 </div>
             </div>
         </div>

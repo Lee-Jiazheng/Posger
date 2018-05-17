@@ -75,11 +75,11 @@ func layoutPaperApi(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		error_msg = "Invalid question ID."
+		error_msg = "Invalid paper ID."
 	}
 	returnJson, _ := json.Marshal(struct {
 		Msg		string		`json:"error"`
-		ID		string		`json:"question_id"`
+		ID		string		`json:"paper_id"`
 	}{error_msg, paperId})
 	io.Copy(w, bytes.NewReader(returnJson))
 }
@@ -105,7 +105,9 @@ func uploadPaperApi(w http.ResponseWriter, r *http.Request) {
 	io.Copy(new_f, up_file)			// copy content to the new fiel
 
 	// Check login
-	go AddPaper(Paper{PaperId: id, Owner: isLogin(r), Path: path, Name: hd.Filename})
+	if users := SelectUser(map[string]interface{}{"username": isLogin(r)}); len(users) != 0 {
+		go AddPaper(Paper{PaperId: id, Owner: users[0].UserId, Path: path, Name: hd.Filename})
+	}
 
 	returnJson, _ := json.Marshal(struct {
 		Url		string		`json:"url"`

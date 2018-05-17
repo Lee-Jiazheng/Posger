@@ -65,7 +65,7 @@ type Mongodb struct{
 /** The models definition and corresponding interface. */
 type User struct {
 	// user's id
-	UserId		int
+	UserId		string
 	// user'name or oauth2 website username
 	Username	string
 	// oauth2 authenticated website

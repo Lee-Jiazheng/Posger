@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{.username}} ————Posger</title>
-</head>
-<body>
+{{template "header"}}     {{/* 把变量传入header模板中 */}}
+<title>User Info</title>
 
+<body>
+    {{template "navigator" .}}
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10">
+                    {{if eq (len .Papers) 0}}
+                        还没有上传文件哦
+                    {{end}}
+                    {{ with .Papers}}
+                        {{range .}}
+                            <a href="" >{{.Name}}</a>
+                        {{end}}
+                    {{ end}}
+                </div>
+
+                {{ with .User}}
+                <div class="col-md-2">
+                    {{.UserId}}
+                </div>
+                {{ end}}
+            </div>
+        </div>
+
+    {{template "footer"}}
 </body>
 </html>

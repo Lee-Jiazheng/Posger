@@ -23,7 +23,7 @@ func SelectUser(filter map[string]interface{}) []User {
 
 func AddPaper(paper Paper) {
 	//paper.PaperId = bson.NewObjectId()
-	if paper.Owner != "anonymous" && len(SelectUser(map[string]interface{}{"username": paper.Owner})) == 0 {
+	if paper.Owner != "anonymous" && len(SelectUser(map[string]interface{}{"userid": paper.Owner})) == 0 {
 		Logger.Println("the username didn't exist, " + paper.Owner)
 		return
 	}
