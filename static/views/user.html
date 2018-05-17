@@ -1,26 +1,73 @@
 {{template "header"}}     {{/* 把变量传入header模板中 */}}
 <title>User Info</title>
 
+<style type="text/css">
+    .paper-item {
+        border: 2px gray solid;
+    }
+
+    .content-padding {
+        padding: 25px;
+    }
+
+    .border-partition {
+        border-left: 2px gray solid;
+    }
+
+    .user-avatar {
+        width: 100%;
+        margin: 30px 0px 30px 0px;
+    }
+
+    .user-name {
+        font-size: 32px;
+        font-weight: 600;
+        text-transform: none;
+    }
+
+    .user-info {
+        text-align: center;
+    }
+
+</style>
+
 <body>
     {{template "navigator" .}}
 
-
         <div class="container">
             <div class="row">
-                <div class="col-md-10">
-                    {{if eq (len .Papers) 0}}
-                        还没有上传文件哦
-                    {{end}}
-                    {{ with .Papers}}
-                        {{range .}}
-                            <a href="" >{{.Name}}</a>
+                <div class="col-sm-8 content-padding">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active">
+                            Files List (已上传文件)
+                        </a>
+                        {{if eq (len .Papers) 0}}
+                            <a href="#" class="list-group-item list-group-item-action">还没有上传文件哦！</a>
                         {{end}}
-                    {{ end}}
+                        {{ with .Papers}}
+                            {{range .}}
+                                <div class="list-group-item list-group-item-action">{{.Name}}
+                                    <small style="float: right;">{{showTime .C_Time}}</small>
+
+                                </div>
+
+                            {{end}}
+                        {{ end}}
+                    </div>
+
+
                 </div>
 
                 {{ with .User}}
-                <div class="col-md-2">
-                    {{.UserId}}
+                <div class="col-sm-4 user-info content-padding">
+                    <div class="border-partition">
+                    <a href="/account" >
+                        <img src="{{.Avatar}}" class="user-avatar">
+                    </a>
+                    <h1 class="user-name">{{.Username}}</h1>
+                    <pre>{{.Bio}}</pre>
+
+                    </div>
                 </div>
                 {{ end}}
             </div>

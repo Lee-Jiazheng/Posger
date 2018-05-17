@@ -83,21 +83,31 @@ func questionView(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, checkLoginUser(r, "question"))
 }
 
+func convert2time(timestamp int32) string {
+	fmt.Println(timestamp)
+	return time.Unix(int64(timestamp), 0).Format("2006-01-02 15:04:05")
+}
+
 // If user has already logged in, it will show its personal page.
 // Otherwise, it will redirect to the index page.
 func infoView(w http.ResponseWriter, r *http.Request) {
 	if username := isLogin(r); username == "anonymous" {
 		http.Redirect(w, r, "/index", http.StatusFound)
 	} else {
-		t, _ := template.ParseFiles("static/views/user.html", "static/views/ref.html")
-		//checkUser := checkLoginUser(r, "info")
+		// The template Name must be "user.html" as base template
+		// Must define funcs before parse files.
+		t, _ := template.New("user.html").Funcs(template.FuncMap{"showTime": func(ts int32) string {
+			return time.Unix(int64(ts), 0).Format("2006-01-02 15:04:05")
+		}}).ParseFiles("static/views/user.html", "static/views/ref.html")
 
 		if users := SelectUser(map[string]interface{}{"username": username, "userid": mux.Vars(r)["userId"]}); len(users) != 0 {
-			t.Execute(w, struct {
+			if err := t.Execute(w, struct {
 				User	*User
 				Papers	[]Paper
 				PageType	string
-			}{&users[0], SelectPaper(map[string]interface{}{"owner": mux.Vars(r)["userId"]}), "info"})
+			}{&users[0], SelectPaper(map[string]interface{}{"owner": mux.Vars(r)["userId"]}), "info"}); err != nil {
+				fmt.Println(err)
+			}
 		} else {
 			http.Redirect(w, r, "/index", http.StatusFound)
 		}

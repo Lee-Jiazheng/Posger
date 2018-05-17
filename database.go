@@ -1,5 +1,6 @@
 package Posger
 
+import "time"
 
 const (
 	DATABASE = "mongodb"		// designated the using database
@@ -22,6 +23,7 @@ func SelectUser(filter map[string]interface{}) []User {
 }
 
 func AddPaper(paper Paper) {
+	paper.C_Time = int32(time.Now().Unix())
 	//paper.PaperId = bson.NewObjectId()
 	if paper.Owner != "anonymous" && len(SelectUser(map[string]interface{}{"userid": paper.Owner})) == 0 {
 		Logger.Println("the username didn't exist, " + paper.Owner)

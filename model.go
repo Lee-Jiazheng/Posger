@@ -10,6 +10,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+
 /** Databaser is An abstract factory interface, if you want to add a new database backend, you must implement all function*/
 type Databaser interface {
 	iUser
@@ -132,6 +133,8 @@ type Paper struct {
 	Path	string
 	// paper upload origin name
 	Name	string
+	// Create TimeStamp, second precision
+	C_Time	int32
 }
 
 type iPaper interface {
