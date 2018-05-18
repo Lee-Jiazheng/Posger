@@ -2,6 +2,16 @@
 <title>User Info</title>
 
 <style type="text/css">
+    h5 {
+        text-transform: none;
+        color: #5cb85c;
+    }
+    .paper-title {
+        color: #3c763d!important;
+    }
+    .pointer:hover {
+        cursor: pointer;
+    }
     .paper-item {
         border: 2px gray solid;
     }
@@ -44,18 +54,24 @@
                         {{if eq (len .Papers) 0}}
                             <a href="#" class="list-group-item list-group-item-action">还没有上传文件哦！</a>
                         {{end}}
-                        {{ with .Papers}}
-                            {{range .}}
-                                <div class="list-group-item list-group-item-action">{{.Name}}
-                                    <small style="float: right;">{{showTime .C_Time}}</small>
-
+                        {{with .Papers}}
+                        {{range .}}
+                            <a class="list-group-item list-group-item-action flex-column align-items-start list-group-item-success paper-title">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div >
+                                        <h5 class="mb-0" style="float: left;">{{.Name}}</h5>
+                                        <div style="float: left; margin-left: 15px;">
+                                            <i class="fa fa-download pointer" style="color:#d2691e!important" aria-hidden="true" onclick="window.open('/static/articles/{{.PaperId}}')" title="下载"></i>
+                                            <i class="fa fa-newspaper-o pointer" style="color:#d2691e!important" aria-hidden="true" onclick="window.open('/digest/{{.PaperId}}')" title="生成模板"></i>
+                                        </div>
+                                    </div>
+                                    <small>{{showTime .C_Time}}</small>
                                 </div>
-
-                            {{end}}
-                        {{ end}}
+                            </a>
+                        {{end}}
+                        {{end}}
+                        <span style="text-align: right">共计： {{len .Papers}} 个文件</span>
                     </div>
-
-
                 </div>
 
                 {{ with .User}}
