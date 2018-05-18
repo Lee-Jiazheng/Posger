@@ -138,7 +138,7 @@ type baseArticle struct {
 
 type jsonArticle struct {
 	baseArticle
-	content		[]string	// summary Content
+	Digest		[]string	// summary Content
 }
 
 func NewJsonArticle(filepath string) (*jsonArticle, error) {
@@ -146,7 +146,7 @@ func NewJsonArticle(filepath string) (*jsonArticle, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &jsonArticle{baseArticle: article.baseArticle, content: article.Summary()}, nil
+	return &jsonArticle{baseArticle: article.baseArticle, Digest: article.Summary()}, nil
 }
 
 // NewArticle use filepath parameter to construct a
@@ -157,8 +157,8 @@ func NewArticle(filepath string) (*Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	article.setMeta(content)
-	article.segmentation(content)
+	residual := article.setMeta(content)
+	article.segmentation(residual)
 	return article, nil
 }
 
@@ -176,6 +176,8 @@ func (self *Article) setMeta(content string) (c string){
 
 	sum_s, sum_e := self.getSummaryIndex(content)
 	self.setSummaryIndex(content[sum_s:sum_e])
+
+	self.setTitleAndAuthor(content[:sum_s])
 	content = content[sum_e:]
 
 	key_s, key_e := self.getKeywordsIndex(content[:])
@@ -198,7 +200,7 @@ func (self *Article) setSummaryIndex(abstract string) {
 }
 
 func (self *Article) setTitleAndAuthor(content string) {
-
+	self.baseArticle.Title = content
 }
 
 func (self *Article) getKeywordsIndex(content string) (s, e int) {
