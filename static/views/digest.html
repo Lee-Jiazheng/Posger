@@ -2,7 +2,16 @@
 <link href="/static/css/jqcloud.css" rel="stylesheet">
 <title>Summary</title>
 
-    <body>
+<div class="title-author">
+            
+    </div>
+
+    <div class="keyword-cloud">
+
+    </div>
+    <body style="padding: 0px">
+        
+
         <!-- nav bar -->
         <header class="jumbotron">
             <div class="row justify-content-center align-items-center" class="text-align: center">
@@ -60,21 +69,29 @@
 
     </body>
     <script src="/static/js/jquery-3.2.1.min.js"></script>
-    <script src="/static/js/plugins/sortable.js"></script>
-    <script src="/static/js/fileinput.js"></script>
-    <script src="/static/themes/explorer-fa/theme.js"></script>
-    <script src="/static/themes/fa/theme.js"></script>
     <script src="/static/js/tether.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/jqcloud-1.0.4.js"></script>
+    <script src="/static/js/PerfectLoad.js"></script>
+    <script>
+    </script>
 
     <script>
         $(document).ready(function() {
-
+            $(function () {
+                $.MyCommon.PageLoading({ loadingTips: "正在处理数据，请稍候..." });
+            })
         });
+        function display_data(data) {
+            data.Title.split("\n").forEach(t => {
+                if (t != "") {
+                    $('.title-author').append("<h2>" + t + "</h2>")
+                }
+            });
+        }
+
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
         var word_array = []
-        //$(function() {
             $.get("/api/digest/paper/" + window.location.href.split("/").slice(-1), function(data, status) {
                 data = JSON.parse(data)
                 //TODO: Keywords's weight
@@ -90,7 +107,9 @@
                 }
                 console.log(data)
                 debugger;
+                display_data(data)
                 $("#keywords").jQCloud(word_array)
+                $.MyCommon.end()
 
             });
             $("#keywords").jQCloud(word_array)
