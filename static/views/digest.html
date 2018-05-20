@@ -1,28 +1,28 @@
 {{template "header"}}
 <link href="/static/css/jqcloud.css" rel="stylesheet">
 <title>Summary</title>
+<style>
+    #ref_list {
+        text-align: left;
+    }
+</style>
 
-<div class="title-author">
+    <body style="padding: 0px;">
+        <div class="title-author" style="text-align: center;">
             
-    </div>
-
-    <div class="keyword-cloud">
-
-    </div>
-    <body style="padding: 0px">
-        
+        </div>
+    
+        <div class="keyword-cloud">
+    
+        </div>
 
         <!-- nav bar -->
-        <header class="jumbotron">
+        <header class="jumbotron" style="background-color: #333;">
             <div class="row justify-content-center align-items-center" class="text-align: center">
                 <div class="col-lg-3 hidden-md-down">
                     <div class="">
-                        <h1>Reference:</h1>
+                        <h1>参考论文:</h1>
                             <ul id="ref_list">
-                                <li>...</li>
-                                <li><a>First Document</a></li>
-                                <li>Second Document</li>
-                                <li>Third Document</li>
                             </ul>
                     </div>
                 </div>
@@ -38,33 +38,9 @@
             </div>
         </header>
         <div class="row">
-            <div class="container">
-                <div class="offset-md-2 col-md-6 offset-xs-0 col-xs-12">
-                    <h1>Title</h1>
-                    <div class="row">
-                        <div >
-                            <span id="abstract"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            img
-                        </div>
-                        <div class="col-md-8">
-                            This is a testing paragraph, we can test it by such as a long term sentences. But we also eat Itality noodle;
-                        </div>
-                    </div>
-                    <div class="row">
-
-                        <div class="col-md-8 col-md-pull-4">
-                                This is a paragraph.
-                            </div>
-                        <div class="col-md-4 col-md-push-8">
-                            This is a img.
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="col-md-4" id="paper-abstract"></div>
+            <div class="col-md-4" id="abstract1"></div>
+            <div class="col-md-4" id="abstract2"></div>            
         </div>
 
     </body>
@@ -85,34 +61,32 @@
         function display_data(data) {
             data.Title.split("\n").forEach(t => {
                 if (t != "") {
-                    $('.title-author').append("<h2>" + t + "</h2>")
+                    $('.title-author').append("<h3>" + t + "</h3>")
                 }
             });
+            $('#paper-abstract').append("<p>" + data.Abstract + "</p>");
+            for (var i = 0; i < 20; i++) {
+                $("#abstract" + (Math.floor(i/5)+1)).append("<p>" + data.Digest[i] + "</p>")
+            }
+
+            word_array = []
+            data.Keywords.forEach(k => {
+                word_array.push({text: k})
+            })
+            $("#keywords").jQCloud(word_array)
+            
+            data.References.slice(0, 3).forEach(r => {
+                $("#ref_list").append("<li>" + r + "</li>")
+            })
         }
 
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
-        var word_array = []
-            $.get("/api/digest/paper/" + window.location.href.split("/").slice(-1), function(data, status) {
-                data = JSON.parse(data)
-                //TODO: Keywords's weight
-                $("#abstract").text(data.Abstract)
-                $("#ref_list").empty()
-                $.each(data.References.slice(0, 3), function (index, value) {
-                    $("#ref_list").append("<li>" + value + "</li>")
-                })
-                for (var i = 0; i < data.Keywords.length; i++) {
-                    word_array.push({
-                        text: data.Keywords[i]
-                    })
-                }
-                console.log(data)
-                debugger;
-                display_data(data)
-                $("#keywords").jQCloud(word_array)
-                $.MyCommon.end()
-
-            });
-            $("#keywords").jQCloud(word_array)
+        $.get("/api/digest/paper/" + window.location.href.split("/").slice(-1), function(data, status) {
+            data = JSON.parse(data)
+            debugger;
+            display_data(data)
+            $.MyCommon.end()
+        });
 
 
     </script>

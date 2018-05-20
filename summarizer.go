@@ -67,7 +67,7 @@ func getPaperApi(w http.ResponseWriter, r *http.Request) {
 func layoutPaperApi(w http.ResponseWriter, r *http.Request) {
 	paperId, error_msg := mux.Vars(r)["paperId"], ""
 	if ps := SelectPaper(map[string]interface{}{"paperid": paperId}); len(ps) != 0 {
-		article, err := NewJsonArticle("static/articles/大数据时代我国企业财务共享中心的优化.pdf")
+		article, err := NewJsonArticle("static/articles/" + paperId)
 		if err != nil {
 			error_msg = "The files uploaded error, " + ps[0].Name
 		} else {
@@ -158,6 +158,7 @@ func NewArticle(filepath string) (*Article, error) {
 		return nil, err
 	}
 	residual := article.setMeta(content)
+	fmt.Println(residual)
 	article.segmentation(residual)
 	return article, nil
 }
@@ -183,6 +184,13 @@ func (self *Article) setMeta(content string) (c string){
 	key_s, key_e := self.getKeywordsIndex(content[:])
 	self.setKeywordsIndex(content[key_s:key_e])
 
+	sum_s, sum_e = self.getEnglishAbstractIndex(content)
+	self.setEnglishAbstract(content[sum_s:sum_e])
+	content = content[sum_e:]
+
+	key_s, key_e = self.getKeywordsIndex(content[:])
+	self.setKeywordsIndex(content[key_s:key_e])
+
 	ref_s, ref_e := self.getReferenceIndex(content)
 	self.setReferenceIndex(content[ref_s:ref_e])
 
@@ -190,7 +198,11 @@ func (self *Article) setMeta(content string) (c string){
 }
 
 func (self *Article) getSummaryIndex(content string) (s, e int) {
-	s = strings.LastIndex(content[:strings.Index(content, "摘 要")], "\n")
+	digest_s := 0
+	if digest_s = strings.Index(content, "摘 要"); digest_s == -1 {
+		digest_s = strings.Index(content, "摘要")
+	}
+	s = strings.LastIndex(content[:digest_s], "\n")		// 或者“摘要”
 	e = strings.LastIndex(content[:strings.Index(content, "关键词")], "\n") + 1
 	return
 }
@@ -203,13 +215,24 @@ func (self *Article) setTitleAndAuthor(content string) {
 	self.baseArticle.Title = content
 }
 
+func (self *Article) getEnglishAbstractIndex(content string) (s, e int){
+	if strings.Index(content, "Abstract") != -1 {
+		s = strings.LastIndex(content[:strings.Index(content, "Abstract")], "\n")		// 或者“摘要”
+		e = strings.LastIndex(content[:strings.Index(content, "Keywords")], "\n") + 1
+	}
+	return
+}
+func (self *Article) setEnglishAbstract(s string) {
+	self.Abstract += "\n" + s
+}
+
 func (self *Article) getKeywordsIndex(content string) (s, e int) {
 	e = strings.Index(content[:], "\n")
 	return
 }
 
 func (self *Article) setKeywordsIndex(keywords string) {
-	self.Keywords = strings.Split(keywords, " ")
+	self.Keywords = append(self.Keywords, strings.Split(keywords, " ")...)
 }
 
 func (self *Article) getReferenceIndex(content string) (s, e int) {
@@ -223,15 +246,17 @@ func (self *Article) setReferenceIndex(reference string) {
 	// By [1] [2] ... rule consists an array.
 	var pos []int; res := strings.Split(reference, "\n")
 	for i, r := range res[1:] {
-		if strings.HasPrefix(r, fmt.Sprintf("[%d]", len(pos) + 1)) {
-			pos = append(pos, i)
+		for _, f := range []string{"[%d]", "[%d】", "【%d]", "【%d】"} {
+			if strings.HasPrefix(r, fmt.Sprintf(f, len(pos) + 1)) {
+				pos = append(pos, i)
+			}
 		}
+
 	}
 	pos = append(pos, len(res))
 	for i, p := range pos[:len(pos)-1] {
 		self.References = append(self.References, strings.Join(purifyContent(res[p:pos[i+1]]...), ""))
 	}
-
 }
 
 type Sentence struct {
@@ -391,6 +416,7 @@ func (self *Article) TokenFrequencyStat() (wordCount int, countMap map[string]in
 	}
 	return
 }
+
 
 func isKeywordMapExist(m *ByWordIdf, word string) bool {
 	for _, idfs := range *m {

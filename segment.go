@@ -23,8 +23,10 @@ func jiebaWordSegmentation(sentence string) []string {
 }
 
 func canSegment(word string) (res bool) {
-	if word == "。" {
-		return true
+	for _, seg := range []string{"。", ".", "！", "？", "!", "?", "；", ";"} {
+		if word == seg {
+			return true
+		}
 	}
 	return false
 }
