@@ -1,6 +1,10 @@
 package Posger
 
-import "time"
+import (
+	"time"
+	"io/ioutil"
+	"github.com/satori/go.uuid"
+)
 
 const (
 	DATABASE = "mongodb"		// designated the using database
@@ -25,6 +29,11 @@ func SelectUser(filter map[string]interface{}) []User {
 func AddPaper(paper Paper) {
 	paper.C_Time = int32(time.Now().Unix())
 	//paper.PaperId = bson.NewObjectId()
+	for _, jpg := range Must(ExtractPdfImages(paper.Path)).([][]byte) {
+		path := "static/articles/imgs/" + uuid.Must(uuid.NewV4()).String() + ".jpg"
+		ioutil.WriteFile(path, jpg, 0666)
+		paper.Images = append(paper.Images, path)
+	}
 	if paper.Owner != "anonymous" && len(SelectUser(map[string]interface{}{"userid": paper.Owner})) == 0 {
 		Logger.Println("the username didn't exist, " + paper.Owner)
 		return

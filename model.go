@@ -133,6 +133,8 @@ type Paper struct {
 	Path	string
 	// paper upload origin name
 	Name	string
+	// paper's built-in images extracted path
+	Images	[]string
 	// Create TimeStamp, second precision
 	C_Time	int32
 }

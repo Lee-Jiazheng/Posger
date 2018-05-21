@@ -158,7 +158,6 @@ func NewArticle(filepath string) (*Article, error) {
 		return nil, err
 	}
 	residual := article.setMeta(content)
-	fmt.Println(residual)
 	article.segmentation(residual)
 	return article, nil
 }
@@ -182,15 +181,18 @@ func (self *Article) setMeta(content string) (c string){
 	content = content[sum_e:]
 
 	key_s, key_e := self.getKeywordsIndex(content[:])
-	self.setKeywordsIndex(content[key_s:key_e])
+	self.setKeywords(content[key_s:key_e])
 
 	sum_s, sum_e = self.getEnglishAbstractIndex(content)
 	self.setEnglishAbstract(content[sum_s:sum_e])
 	content = content[sum_e:]
 
-	key_s, key_e = self.getKeywordsIndex(content[:])
-	self.setKeywordsIndex(content[key_s:key_e])
-
+	// 如果存在英文摘要，那么一定存在英文关键词
+	if sum_s != 0 {
+		key_s, key_e = self.getKeywordsIndex(content[:])
+		self.setKeywords(content[key_s:key_e])
+	}
+	
 	ref_s, ref_e := self.getReferenceIndex(content)
 	self.setReferenceIndex(content[ref_s:ref_e])
 
@@ -231,7 +233,7 @@ func (self *Article) getKeywordsIndex(content string) (s, e int) {
 	return
 }
 
-func (self *Article) setKeywordsIndex(keywords string) {
+func (self *Article) setKeywords(keywords string) {
 	self.Keywords = append(self.Keywords, strings.Split(keywords, " ")...)
 }
 

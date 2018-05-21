@@ -63,6 +63,7 @@
                                         <div style="float: left; margin-left: 15px;">
                                             <i class="fa fa-download pointer" style="color:#d2691e!important" aria-hidden="true" onclick="window.open('/static/articles/{{.PaperId}}')" title="下载"></i>
                                             <i class="fa fa-newspaper-o pointer" style="color:#d2691e!important" aria-hidden="true" onclick="window.open('/digest/{{.PaperId}}')" title="生成模板"></i>
+                                            <i class="fa fa-trash-o pointer" style="color:#d2691e!important" aria-hidden="true" onclick="delete_paper({{.PaperId}});" title="删除文件"></i>
                                         </div>
                                     </div>
                                     <small>{{showTime .C_Time}}</small>
@@ -91,4 +92,21 @@
 
     {{template "footer"}}
 </body>
+
+<script>
+    function delete_paper(id, name) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/digest/paper/"+id,
+            success: function(msg) {
+                msg = JSON.parse(msg)
+                if (msg.error) {
+                    alert("删除失败, " + name)
+                } else {
+                    location.reload()
+                }
+            }
+        })
+    }
+</script>
 </html>

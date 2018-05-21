@@ -71,6 +71,10 @@
 
             word_array = []
             data.Keywords.forEach(k => {
+                replace_char = ["关键词", "Keywords", "；", ";", "【", "】", "[", "]", ":", "："]
+                for (var i = 0; i < replace_char.length; ++i) {
+                    k = k.replace(replace_char[i], "")
+                }
                 word_array.push({text: k})
             })
             $("#keywords").jQCloud(word_array)
