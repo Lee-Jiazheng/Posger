@@ -4,23 +4,31 @@
 <body>
     {{template "navigator" .}}
 
+    <style>
+        .pointer {
+            cursor: pointer;
+            height: 390px;
+        }
+    </style>
+
     <header class="jumbotron" style="margin-bottom: 0px; background-color: #82abba;">
         <div class="container">
             <div class="row">
                 <div class="col">
                     <div class="carousel slide" id="mycarousel" data-ride="carousel">
                         <div class="carousel-inner" role="listbox">
-                            <div class="carousel-item active">
-                                <img class="d-block img-fluid" src="" alt="First Carousel">
+                            <div class="carousel-item active pointer" onclick="window.location.href='/q-a'">
+                                <img class="d-block img-fluid" src="/static/img/home2.jpeg" alt="First Carousel">
                                 <div class="carousel-caption d-none d-md-block">
-                                    <h2>First Item<span class="badge badge-danger">HOT</span></h2>
-                                    This is the description.
+                                    <h2>答你想问<span class="badge badge-danger">HOT</span></h2>
+                                    <span>我来问道无馀说，云在青天水在瓶。</span>
                                 </div>
                             </div>
-                            <div class="carousel-item">
-                                <img class="d-block img-fluid" src="" alt="Second Carousel">
+                            <div class="carousel-item pointer" onclick="window.location.href='/contact'">
+                                <img class="d-block img-fluid" src="/static/img/home.jpeg" alt="Second Carousel">
                                 <div class="carousel-caption d-none d-md-block">
-                                    <h2>Second Item</h2>
+                                    <h2>了解我，了解自己</h2>
+                                    <span>行遍天下路，难觅知音人。</span>
                                 </div>
                             </div>
                         </div>
@@ -64,8 +72,8 @@
     </style>
 
     <section style="background-color: #465b74; padding: 80px 0; text-align: center;">
-        <h3 style="font-size: 80px; color: #ffffff; font-family: Roboto;">Projects</h3>
-        <p>haha</p>
+        <h3 style="font-size: 80px; color: #ffffff; font-family: Roboto;">To be Heroes</h3>
+        <h2>本项目由超级英雄赞助开发。</h2>
         <ul style="position: relative; list-style: none; display: block; height: 210px; width: 720px; margin: 10px auto 0px auto; padding: 0;">
             <li class="sticker sticker-heroes sticker-batman"></li>
             <li class="sticker sticker-heroes sticker-ironman"></li>
