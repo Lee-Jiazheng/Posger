@@ -50,7 +50,7 @@ func processQuestion(w http.ResponseWriter, r *http.Request) {
 				io.Copy(w, bytes.NewReader(d))
 				return
 			}
-			go AddQuestion(Question{questionId, q[0], "", nil})
+			go AddQuestion(Question{questionId, q[0], "", nil, nil, nil})
 			// return message, if server response successfully, waiting for answer
 			// return error, if server
 		} else {
@@ -89,9 +89,9 @@ func getAnswer(w http.ResponseWriter, r *http.Request) {
 			// return the proceeded question / answer message
 			d, _ := json.Marshal(struct {
 				Msg string		`json:"msg"`
-				Question string	`json:"question"`
+				Question	`json:"question"`
 				Answer	string	`json:"answer"`
-			}{"Answer Completed!", question.Question, question.Answer})
+			}{"Answer Completed!", question, question.Answer})
 			io.Copy(w, bytes.NewReader(d))
 		}
 	}
@@ -104,6 +104,8 @@ func alterAnswer(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	info := &struct{
 		Answer		string		`json:"answer"`
+		Scores		[]float32	`json:"scores"`
+		Answers		[]string	`json:"answers"`
 		Passages	[]string	`json:"passages"`
 	}{}
 	json.Unmarshal(body, &info)
@@ -113,9 +115,9 @@ func alterAnswer(w http.ResponseWriter, r *http.Request) {
 		io.Copy(w, bytes.NewReader([]byte(`{"error": "question_id didn't exist!"}`)))
 	} else {
 		question := qs[0]
-		go SetQuestionAnswer(Question{question.QuestionId, question.Question, info.Answer, info.Passages})
+		go SetQuestionAnswer(Question{question.QuestionId, question.Question, info.Answer, info.Scores, info.Answers, info.Passages})
 		io.Copy(w, bytes.NewReader([]byte(`{"msg": "ok"}"`)))
-		Logger.Println(question.Question, ": ,", info.Answer)
+		Logger.Println(question.Question, ": ", info.Answer)
 	}
 }
 
