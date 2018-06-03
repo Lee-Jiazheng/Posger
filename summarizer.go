@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"github.com/satori/go.uuid"
 	"bytes"
+	"io/ioutil"
 )
 
 var (
@@ -43,6 +44,7 @@ func init() {
 
 // PathPrefix is api/digest, uploading files api and so on.
 func registeSummaryApi(router *mux.Router) {
+	router.HandleFunc("/", digestTextApi).Methods("POST")
 	// get paper list by logined user
 	router.HandleFunc("/paper", getPaperApi).Methods("GET")
 	// get paper layout data by paperId
@@ -61,6 +63,21 @@ func getPaper(username string) ([]byte){
 
 func getPaperApi(w http.ResponseWriter, r *http.Request) {
 	RequireLoginApi(w, r, getPaper, "")
+}
+
+func digestTextApi(w http.ResponseWriter, r *http.Request) {
+	body, _ := ioutil.ReadAll(r.Body)
+	info := &struct{
+		Content		string		`json:"content"`
+	}{}
+	json.Unmarshal(body, &info)
+	article := &Article{Sentences: make([]Sentence, 0)}
+	article.segmentation(info.Content)
+
+	io.Copy(w, bytes.NewReader(Must(json.Marshal(struct {
+		Msg		string		`json:"msg"`
+		Result	[]string	`json:"summary"`
+	}{"Nice Request!", article.Summary()})).([]byte)))
 }
 
 // get Paper layout meta data Api

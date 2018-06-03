@@ -9,6 +9,10 @@
             cursor: pointer;
             height: 390px;
         }
+        .list-item {
+            padding: 80px 0; 
+            text-align: center;
+        }
     </style>
 
     <header class="jumbotron" style="margin-bottom: 0px; background-color: #82abba;">
@@ -69,9 +73,64 @@
         .sticker-greenman .sticker-img {
             background-image: url(/static/img/heroes-green.png);
         }
+
+        .summary-input {
+            width: 100%; 
+            height: auto; 
+            min-height: 200px; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            line-height: 1.42857143;
+            padding: 6px 12px;
+        }
+
+        .tex {
+            min-height: 200px;
+            max-width: 875px;
+            background: #fff;
+            border: 2px #b8b8b8 solid;
+            text-align: left;
+        }
+
+        .summary-image {
+            width: 140px;
+            height: 140px;
+            background: #c290ff url(/static/img/summary_icon.jpg) no-repeat center;
+            border-radius: 70px;
+            margin: 0px auto;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
     </style>
 
-    <section style="background-color: #465b74; padding: 80px 0; text-align: center;">
+    <section class="list-item" style="background-color: #52accc;">
+        <h3 style="font-size: 80px; color: #ffffff; font-family: Roboto;">Text Summary</h3>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-5">
+                    <h2>原始文本</h2>
+                    
+                    <textarea class="summary-input"></textarea>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="summary-image"></div>
+                </div>
+
+                <div class="col-md-5">
+                    <h2>摘要结果</h2>
+                    <div class="tex" id="summary-result">
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="list-item" style="background-color: #465b74; ">
         <h3 style="font-size: 80px; color: #ffffff; font-family: Roboto;">To be Heroes</h3>
         <h2>本项目由超级英雄赞助开发。</h2>
         <ul style="position: relative; list-style: none; display: block; height: 210px; width: 720px; margin: 10px auto 0px auto; padding: 0;">
@@ -102,5 +161,23 @@
             $('#carousel-button').children("span").addClass("fa-pause");
         }
     })
+
+    $(".summary-image").click(function() {
+        if ($(".summary-input").val() == "") {
+            alert("请输入文本!"); return
+        }
+        $.ajax({
+            type: "POST",
+            url: "/api/digest/",
+            data: JSON.stringify({
+                "content": $(".summary-input").val()
+            }),
+            success: function (msg) {
+                $("#summary-result").html(JSON.parse(msg).summary.filter(function (x) { return x != ""}).join("</br>"))
+                debugger
+            }
+        });
+    });
+
 </script>
 </html>
