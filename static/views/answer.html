@@ -51,7 +51,7 @@
     function add_answer(question) {
         function generate() {
             var lists = "", active="active";
-            for (var i = 0; i < qu estion.Answers.length; i++) {
+            for (var i = 0; i < question.Answers.length; i++) {
                 lists += "<li class=\"list-group-item " + active + "\"><span class=\"ppover\" rel=\"popover\" data-content=\"" + question.Passages[i] + "\" data-original-title=\"评分： " + question.Scores[i] + "\" aria-describedby=\"popover527537\">" + question.Answers[i] + "</span></li>\n"
                 active = "";
             }

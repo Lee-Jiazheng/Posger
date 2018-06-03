@@ -5,43 +5,62 @@
     #ref_list {
         text-align: left;
     }
+
+    .summary-list p::first-letter {
+        font-size: 200%;
+    }
+    
+    .keywords {
+        margin: 0 auto;
+        min-height: 300px;
+        border: 1px solid #333;
+        border-radius: 1%;
+    }
+
+    .list-group-item a {
+        color: black;
+    }
 </style>
 
     <body style="padding: 0px;">
-        <div class="title-author" style="text-align: center;">
+            <div class="row">
+                <!--  Digest Content Layout  -->
+                <div class="col-md-7 offset-md-1">
+                    <div class="col-md-12">
+                        <h2 id="title-1"></h1>
+                        <h3 id="title-2"></h3>
+                        <h4 id="title-3"></h4>
+                    </div>
 
-        </div>
-    
-        <div class="keyword-cloud">
-    
-        </div>
+                    <blockquote class="blockquote" id="paper-abstract"></blockquote>
+                    <hr>
+                    
+                    <div class="summary-list"></div>
+                </div>
+                <!--  End Digest Content Layout  -->
 
-        <!-- nav bar -->
-        <header class="jumbotron" style="background-color: #333;">
-            <div class="row justify-content-center align-items-center" class="text-align: center">
-                <div class="col-lg-3 hidden-md-down">
-                    <div class="">
-                        <h1>参考论文:</h1>
-                            <ul id="ref_list">
+                <!--  Reference and Keywords Layout  -->
+                <div class="col-md-3">
+                    <div class="keywords">
+                    </div>
+                    <hr>
+
+                    <div class="reference-div">
+                        <h2>参考文献</h2>
+                        <div>
+                            <ul class="reference-list list-group">
                             </ul>
+                        </div>
                     </div>
+
                 </div>
-                <div class="col-lg-6 col-md-12">
-                        <div id="keywords" style="min-height: 250px;float:none; display: block; margin-left: auto; margin-right: auto;"></div>
-                </div>
-                <div class="col-lg-3 hidden-md-down">
-                    <div class="">
-                        <h1>Related Work:</h1>
-                        <h2></h2>
-                    </div>
-                </div>                
+                
+                
+                
+                <!--  End Reference and Keywords Layout  -->
+                
             </div>
-        </header>
-        <div class="row">
-            <div class="col-md-4" id="paper-abstract"></div>
-            <div class="col-md-4" id="abstract1"></div>
-            <div class="col-md-4" id="abstract2"></div>            
-        </div>
+
 
     </body>
     <script src="/static/js/jquery-3.2.1.min.js"></script>
@@ -59,15 +78,14 @@
             })
         });
         function display_data(data) {
-            data.Title.split("\n").forEach(t => {
-                if (t != "") {
-                    $('.title-author').append("<h3>" + t + "</h3>")
-                }
-            });
+            titles = data.Title.split("\n").filter(x => x != "" && x != "\n")
+            titles = titles.slice(titles.length-3, titles.length)
+            $("#title-1").html(titles[0])
+            $("#title-2").html(titles[1])
+            $("#title-3").html(titles[2])
+
             $('#paper-abstract').append("<p>" + data.Abstract + "</p>");
-            for (var i = 0; i < 20; i++) {
-                $("#abstract" + (Math.floor(i/5)+1)).append("<p>" + data.Digest[i] + "</p>")
-            }
+            data.Digest.slice(0, 5).map(c => $(".summary-list").append("<p>" + c + "</p>"))
 
             word_array = []
             data.Keywords.forEach(k => {
@@ -77,17 +95,16 @@
                 }
                 word_array.push({text: k})
             })
-            $("#keywords").jQCloud(word_array)
+            $(".keywords").jQCloud(word_array)
             
-            data.References.slice(0, 3).forEach(r => {
-                $("#ref_list").append("<li>" + r + "</li>")
+            data.References.slice(0, 5).forEach(r => {
+                $(".reference-list").append("<li class=\"list-group-item\"><a href=\"http://xueshu.baidu.com/s?wd=" + r + "\" target=\"_blank\">" + r + "</a></li>")
             })
         }
 
         // ajax request, backend should find keywords from Baidu baike, if have we give it a link.
         $.get("/api/digest/paper/" + window.location.href.split("/").slice(-1), function(data, status) {
             data = JSON.parse(data)
-            debugger;
             display_data(data)
             $.MyCommon.end()
         });
