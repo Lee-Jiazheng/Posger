@@ -76,7 +76,7 @@
 
         .summary-input {
             width: 100%; 
-            height: auto; 
+            height: 450px; 
             min-height: 200px; 
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -85,7 +85,7 @@
         }
 
         .tex {
-            min-height: 200px;
+            min-height: 450px;
             max-width: 875px;
             background: #fff;
             border: 2px #b8b8b8 solid;
@@ -111,7 +111,6 @@
             <div class="row">
                 <div class="col-md-5">
                     <h2>原始文本</h2>
-                    
                     <textarea class="summary-input"></textarea>
                 </div>
 
@@ -162,6 +161,13 @@
         }
     })
 
+    $(".summary-input").val("原标题：河南宣判一起殷墟盗掘案\n" +
+            "新华社郑州6月7日电（记者桂娟、王林园）河南省安阳市殷都区人民法院6日公开宣判被告人宋涛、王卫军盗掘古文化遗址、古墓葬一案。盗掘地点属于殷墟时期的文化遗址与墓葬叠压区域，且在全国重点文物保护单位殷墟遗址重点保护范畴内。\n" +
+            "殷都区人民法院对被告人宋涛以盗掘古文化遗址、古墓葬罪判处有期徒刑十四年六个月，并处罚金人民币二十万元；对被告人王卫军以盗掘古文化遗址、古墓葬罪判处有期徒刑十四年，并处罚金人民币二十万元。\n" +
+            "经审理查明：2017年六七月份，被告人宋涛、王卫军伙同他人先后在殷都区梅园庄北街赵志强（另案处理）家中客厅北屋、东北卧室实施盗掘行为，该行为破坏了殷墟遗址的商代文化层。同年7月份，被告人宋涛、王卫军伙同他人在安阳市殷都区小庄村91号院北屋内实施盗掘行为。经国家文物出境鉴定河南站鉴定，安阳市殷都区小庄村91号院北屋地下属全国重点文物保护单位殷墟遗址重点保护范畴内，盗掘地点属于殷墟时期的文化遗址与墓葬叠压区域。\n" +
+            "安阳市殷都区人民法院认为，被告人宋涛、王卫军在确定为全国重点文物保护单位的殷墟遗址保护区范围内盗掘古文化遗址、古墓葬，其行为均已构成盗掘古文化遗址、古墓葬罪。安阳市殷都区人民检察院指控被告人宋涛、王卫军犯盗掘古文化遗址、古墓葬罪罪名成立。被告人宋涛、王卫军的盗掘行为已经破坏了世界文化遗产、全国重点文物保护单位殷墟遗址的商代文化层，应当予以严惩。法庭遂作出上述判决。\n" +
+            "责任编辑：张岩")
+
     $(".summary-image").click(function() {
         if ($(".summary-input").val() == "") {
             alert("请输入文本!"); return
@@ -173,11 +179,13 @@
                 "content": $(".summary-input").val()
             }),
             success: function (msg) {
-                $("#summary-result").html(JSON.parse(msg).summary.filter(function (x) { return x != ""}).join("</br>"))
+                $("#summary-result").html(JSON.parse(msg).summary.filter(function (x) { return x != ""}).join("</br></br>"))
                 debugger
             }
         });
     });
+
+    $(".summary-image").click()
 
 </script>
 </html>
