@@ -97,8 +97,8 @@
             })
             $(".keywords").jQCloud(word_array)
             
-            data.References.slice(0, 5).forEach(r => {
-                $(".reference-list").append("<li class=\"list-group-item\"><a href=\"http://xueshu.baidu.com/s?wd=" + r + "\" target=\"_blank\">" + r + "</a></li>")
+            data.References.slice(0, 4).forEach(r => {
+                $(".reference-list").append("<li class=\"list-group-item\"><a href=\"http://xueshu.baidu.com/s?wd=" + r + "\" target=\"_blank\" style=\"width: 100%; word-wrap: break-word;\">" + r + "</a></li>")
             })
         }
 

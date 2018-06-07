@@ -237,7 +237,12 @@ func (self *Article) setTitleAndAuthor(content string) {
 func (self *Article) getEnglishAbstractIndex(content string) (s, e int){
 	if strings.Index(content, "Abstract") != -1 {
 		s = strings.LastIndex(content[:strings.Index(content, "Abstract")], "\n")		// 或者“摘要”
-		e = strings.LastIndex(content[:strings.Index(content, "Keywords")], "\n") + 1
+		if strings.Index(content, "Keywords") != -1 {
+			e = strings.LastIndex(content[:strings.Index(content, "Keywords")], "\n") + 1
+		} else {
+			e = strings.LastIndex(content[:strings.Index(content, "Key words")], "\n") + 1
+		}
+		
 	}
 	return
 }
@@ -265,7 +270,7 @@ func (self *Article) setReferenceIndex(reference string) {
 	// By [1] [2] ... rule consists an array.
 	var pos []int; res := strings.Split(reference, "\n")
 	for i, r := range res[1:] {
-		for _, f := range []string{"[%d]", "[%d】", "【%d]", "【%d】"} {
+		for _, f := range []string{"[%d]", "[%d】", "【%d]", "【%d】", "[ %d ]"} {
 			if strings.HasPrefix(r, fmt.Sprintf(f, len(pos) + 1)) {
 				pos = append(pos, i)
 			}
