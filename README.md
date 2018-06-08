@@ -1,5 +1,28 @@
 # Poster
-Convert a paper to a poster
+It Contains paper summarization and layout.
+
+## Database
+We choose the mongodb as the database backend and implemente it. But we use the `Abstract Factory` and `databaser` interface, therefore it's easy to replace the database.
+
+## Users
+OAuth2.
+
+## Functions
+* Text Summarize    =>  `Text-Rank` Algorithm.
+* Question Answering System Handler
+
+## Support
+* RESTful API
+* Bootstrap Front-end Framework
+
+## Docker
+You can use the following command to build a docker image.
+```bash
+docker build .
+```
+
+---
+# Below is Chinese Details
 
 ## Steps
 1. 下载论文
@@ -30,17 +53,5 @@ docker run --rm -p 9998:9998 logicalspark/docker-tikaserver
 1. pdf 提取图片
 2. 把static目录设为根目录， html模版。
 
-## TODO:
-1. 数据库连接池，如mybatis。
-1. qa 的数据库设计
-2. qa api 实现, digest api 重新设计实现
-3. contact us view 设置
-4. 404页面添加
-5. 个人主页设计， Userinfo
-6. bottle server
-7. 调试demo api, 看看内存占用量
-8. 毕业论文
 
-## Bug:
-1. 程序异常崩溃,如panic会导致JVM崩溃，无法重新启动Tika，导致程序无法正常启动。
 
